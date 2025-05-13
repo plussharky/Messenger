@@ -1,0 +1,47 @@
+﻿@page "/"
+@using ChatClient.Models
+@using MudBlazor
+@inject HttpClient Http
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudText Typo="Typo.h5">Chat</MudText>
+
+    <MudTextField @bind-Value="newMessage" Label="Enter message" Variant="Variant.Filled" />
+    <MudButton OnClick="SendMessage" Color="Color.Primary" Class="mt-2">Send</MudButton>
+
+    <MudDivider Class="my-2" />
+
+    <MudList T="ChatMessage" Dense="true">
+        @foreach (var msg in messages)
+        {
+            <MudListItem T="ChatMessage" Value="msg">@msg.Text</MudListItem>
+        }
+    </MudList>
+
+</MudContainer>
+
+@code {
+    private string newMessage = "";
+    private List<ChatMessage> messages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMessages();
+    }
+
+    private async Task LoadMessages()
+    {
+        messages = await Http.GetFromJsonAsync<List<ChatMessage>>("api/Messages");
+    }
+
+    private async Task SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            var msg = new ChatMessage { Text = newMessage };
+            await Http.PostAsJsonAsync("api/Messages", msg);
+            newMessage = "";
+            await LoadMessages();
+        }
+    }
+}
