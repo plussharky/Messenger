@@ -3,7 +3,7 @@ using MessageService.Data;
 
 namespace MessageService.Infrastructure;
 
-public class MigrationHostedService : IHostedService
+internal class MigrationHostedService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<MigrationHostedService> _logger;

@@ -8,7 +8,7 @@ namespace MessageService.Controllers
 {
     [Route("api/messages")]
     [ApiController]
-    public class MessagesController : ControllerBase
+    public sealed class MessagesController : ControllerBase
     {
         private readonly IMessageRepository _messageRepository;
 
@@ -18,15 +18,19 @@ namespace MessageService.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Message>> Get()
-            => await _messageRepository.GetAllAsync();
+        public async Task<IEnumerable<MessageDto>> Get()
+        {
+            var messages = await _messageRepository.GetAllAsync();
+            return messages.Select(MessageDto.FromMessage);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateMessageDto dto)
         {
             var message = new Message(dto.Text);
             var created = await _messageRepository.AddAsync(message);
-            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+            var createdDto = MessageDto.FromMessage(created);
+            return CreatedAtAction(nameof(Get), new { id = createdDto.Id }, createdDto);
         }
     }
 }

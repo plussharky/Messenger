@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MessageService.Repositories;
 
-public class MessageRepository : IMessageRepository
+internal class MessageRepository : IMessageRepository
 {
     private readonly MessageContext _messageContext;
 
