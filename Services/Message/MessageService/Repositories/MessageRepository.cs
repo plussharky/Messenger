@@ -17,7 +17,7 @@ public class MessageRepository : IMessageRepository
     {
         return await _messageContext.Messages
                          .AsNoTracking()
-                         .OrderBy(m => m.SentAt)
+                         .OrderByDescending(m => m.SentAt)
                          .ToListAsync();
     }
 
