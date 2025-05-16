@@ -38,8 +38,8 @@
     {
         if (!string.IsNullOrWhiteSpace(newMessage))
         {
-            var msg = new ChatMessage { Text = newMessage };
-            await Http.PostAsJsonAsync("api/Messages", msg);
+            var msg = new ChatMessage(newMessage);
+            await Http.PostAsJsonAsync("api/Messages", new { Text = newMessage });
             newMessage = "";
             await LoadMessages();
         }

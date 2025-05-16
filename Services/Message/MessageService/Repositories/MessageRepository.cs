@@ -23,7 +23,6 @@ public class MessageRepository : IMessageRepository
 
     public async Task<Message> AddAsync(Message message)
     {
-        message.SentAt = DateTime.UtcNow;
         var entry = await _messageContext.Messages.AddAsync(message);
         await _messageContext.SaveChangesAsync();
         return entry.Entity;

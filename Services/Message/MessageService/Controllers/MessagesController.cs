@@ -24,11 +24,7 @@ namespace MessageService.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateMessageDto dto)
         {
-            var message = new Message
-            {
-                Text = dto.Text
-            };
-            
+            var message = new Message(dto.Text);
             var created = await _messageRepository.AddAsync(message);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
