@@ -1,4 +1,5 @@
 using MessageService.Data;
+using MessageService.Infrastructure;
 using MessageService.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,9 @@ builder.Services.AddDbContext<MessageContext>(opts =>
     opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+// Add database migration service
+builder.Services.AddHostedService<MigrationHostedService>();
 
 var app = builder.Build();
 
