@@ -11,12 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{56
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{B8F72DE5-14D1-46B6-83E3-3E5B5ECF67D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageService", "Services\Message\MessageService\MessageService.csproj", "{6688B63F-A4C9-407B-B19B-6534BF63804A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatClient", "ChatClient\ChatClient.csproj", "{0952211B-7423-4362-B07A-E30616EA7C75}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6688B63F-A4C9-407B-B19B-6534BF63804A} = {6688B63F-A4C9-407B-B19B-6534BF63804A}
-	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.Infrastructure", "Services\Message\Messenger.Message.Infrastructure\Messenger.Message.Infrastructure.csproj", "{5434288B-803A-4695-993C-912C670A877C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.Domain", "Services\Message\Messenger.Message.Domain\Messenger.Message.Domain.csproj", "{0794452A-018F-4CE2-B340-B37D0BAD6FCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.Application", "Services\Message\Messenger.Message.Application\Messenger.Message.Application.csproj", "{588C4E91-155D-4317-99CF-365783D4374E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.API", "Services\Message\Messenger.Message.API\Messenger.Message.API.csproj", "{F53745E9-2580-4D66-BEED-7714A7F27754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,21 +31,36 @@ Global
 		{B8F72DE5-14D1-46B6-83E3-3E5B5ECF67D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8F72DE5-14D1-46B6-83E3-3E5B5ECF67D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8F72DE5-14D1-46B6-83E3-3E5B5ECF67D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6688B63F-A4C9-407B-B19B-6534BF63804A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6688B63F-A4C9-407B-B19B-6534BF63804A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6688B63F-A4C9-407B-B19B-6534BF63804A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6688B63F-A4C9-407B-B19B-6534BF63804A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0952211B-7423-4362-B07A-E30616EA7C75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0952211B-7423-4362-B07A-E30616EA7C75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0952211B-7423-4362-B07A-E30616EA7C75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0952211B-7423-4362-B07A-E30616EA7C75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5434288B-803A-4695-993C-912C670A877C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5434288B-803A-4695-993C-912C670A877C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5434288B-803A-4695-993C-912C670A877C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5434288B-803A-4695-993C-912C670A877C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0794452A-018F-4CE2-B340-B37D0BAD6FCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0794452A-018F-4CE2-B340-B37D0BAD6FCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0794452A-018F-4CE2-B340-B37D0BAD6FCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0794452A-018F-4CE2-B340-B37D0BAD6FCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{588C4E91-155D-4317-99CF-365783D4374E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{588C4E91-155D-4317-99CF-365783D4374E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{588C4E91-155D-4317-99CF-365783D4374E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{588C4E91-155D-4317-99CF-365783D4374E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F53745E9-2580-4D66-BEED-7714A7F27754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53745E9-2580-4D66-BEED-7714A7F27754}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53745E9-2580-4D66-BEED-7714A7F27754}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53745E9-2580-4D66-BEED-7714A7F27754}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{75086ACF-75A4-42B3-90E3-85B3DBDCC64F} = {BDAF3FB8-3186-4B99-9F89-718BAC6BA549}
-		{6688B63F-A4C9-407B-B19B-6534BF63804A} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
 		{0952211B-7423-4362-B07A-E30616EA7C75} = {56CC5F93-8827-4CB3-85B8-F0602A8EDB47}
+		{5434288B-803A-4695-993C-912C670A877C} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
+		{0794452A-018F-4CE2-B340-B37D0BAD6FCE} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
+		{588C4E91-155D-4317-99CF-365783D4374E} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
+		{F53745E9-2580-4D66-BEED-7714A7F27754} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
 	EndGlobalSection
 EndGlobal

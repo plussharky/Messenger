@@ -1,8 +1,8 @@
-﻿using MessageService.Data;
-using MessageService.Data.Models;
+﻿using Messenger.Message.Domain.Entities;
+using Messenger.Message.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace MessageService.Repositories;
+namespace Messenger.Message.Infrastructure.Data;
 
 internal class MessageRepository : IMessageRepository
 {
@@ -13,7 +13,7 @@ internal class MessageRepository : IMessageRepository
         _messageContext = context;
     }
 
-    public async Task<IEnumerable<Message>> GetAllAsync()
+    public async Task<IEnumerable<MessageEntity>> GetAllAsync()
     {
         return await _messageContext.Messages
                          .AsNoTracking()
@@ -21,7 +21,7 @@ internal class MessageRepository : IMessageRepository
                          .ToListAsync();
     }
 
-    public async Task<Message> AddAsync(Message message)
+    public async Task<MessageEntity> AddAsync(MessageEntity message)
     {
         var entry = await _messageContext.Messages.AddAsync(message);
         await _messageContext.SaveChangesAsync();

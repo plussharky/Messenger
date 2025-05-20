@@ -4,7 +4,7 @@ services:
   messageservice:
     build:
       context: .
-      dockerfile: /Services/Message/MessageService/Dockerfile
+      dockerfile: /Services/Message/Messenger.Message.API/Dockerfile
     image: messenger-message
 
   postgres:

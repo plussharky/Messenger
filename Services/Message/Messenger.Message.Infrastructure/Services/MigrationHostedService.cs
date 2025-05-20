@@ -1,7 +1,10 @@
+using Messenger.Message.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using MessageService.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace MessageService.Infrastructure;
+namespace Messenger.Message.Infrastructure.Services;
 
 internal class MigrationHostedService : IHostedService
 {
@@ -38,4 +41,4 @@ internal class MigrationHostedService : IHostedService
     {
         return Task.CompletedTask;
     }
-} 
+}
