@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using ChatClient.Models
 @using MudBlazor
 @inject HttpClient Http
@@ -31,14 +31,13 @@
 
     private async Task LoadMessages()
     {
-        messages = await Http.GetFromJsonAsync<List<ChatMessage>>("api/Messages");
+        messages = await Http.GetFromJsonAsync<List<ChatMessage>>("api/Messages") ?? new List<ChatMessage>();
     }
 
     private async Task SendMessage()
     {
         if (!string.IsNullOrWhiteSpace(newMessage))
         {
-            var msg = new ChatMessage(newMessage);
             await Http.PostAsJsonAsync("api/Messages", new { Text = newMessage });
             newMessage = "";
             await LoadMessages();

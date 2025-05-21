@@ -1,6 +1,6 @@
-﻿namespace Messenger.Message.API.Requests;
+namespace Messenger.Message.API.Requests;
 
-public class CreateMessageRequest
+public sealed class CreateMessageRequest
 {
     public string Text { get; set; } = string.Empty;
 }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Messenger.Message.Infrastructure.Services;
 
-internal class MigrationHostedService : IHostedService
+internal sealed class MigrationHostedService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<MigrationHostedService> _logger;

@@ -1,10 +1,10 @@
-﻿using Messenger.Message.Domain.Entities;
+using Messenger.Message.Domain.Entities;
 using Messenger.Message.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.Message.Infrastructure.Data;
 
-internal class MessageRepository : IMessageRepository
+internal sealed class MessageRepository : IMessageRepository
 {
     private readonly MessageContext _messageContext;
 

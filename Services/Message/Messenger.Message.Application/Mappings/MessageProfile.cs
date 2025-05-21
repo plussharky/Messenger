@@ -2,14 +2,13 @@ using AutoMapper;
 using Messenger.Message.Application.DTOs;
 using Messenger.Message.Domain.Entities;
 
-namespace Messenger.Message.Application.Mappings
+namespace Messenger.Message.Application.Mappings;
+
+public sealed class MessageProfile : Profile
 {
-    public class MessageProfile : Profile
+    public MessageProfile()
     {
-        public MessageProfile()
-        {
-            CreateMap<MessageEntity, MessageDto>();
-            CreateMap<CreateMessageDto, MessageEntity>();
-        }
+        CreateMap<MessageEntity, MessageDto>();
+        CreateMap<CreateMessageDto, MessageEntity>();
     }
-} 
+}

@@ -4,18 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Messenger.Message.Infrastructure
+namespace Messenger.Message.Infrastructure;
+
+public static class InfrastructureServiceCollectionExtensions
 {
-    public static class InfrastructureServiceCollectionExtensions
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<MessageContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<MessageContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
 
-            return services;
-        }
+        return services;
     }
 }

@@ -1,17 +1,20 @@
-﻿namespace ChatClient.Models
+namespace ChatClient.Models;
+
+public sealed class ChatMessage
 {
-    public class ChatMessage
+    public ChatMessage(string text)
     {
-        public int Id { get; init; }
-        public required string Text { get; init; }
-        public DateTime SentAt { get; init; }
-
-        public ChatMessage(string text)
-        {
-            Text = text;
-            SentAt = DateTime.UtcNow;
-        }
-
-        private ChatMessage() { }
+        Text = text;
+        SentAt = DateTime.UtcNow;
     }
+
+    private ChatMessage()
+    {
+    }
+
+    public int Id { get; init; }
+
+    required public string Text { get; init; }
+
+    public DateTime SentAt { get; init; }
 }
