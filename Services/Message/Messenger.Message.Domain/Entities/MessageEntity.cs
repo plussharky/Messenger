@@ -1,6 +1,6 @@
 namespace Messenger.Message.Domain.Entities;
 
-public sealed class MessageEntity
+public sealed record MessageEntity
 {
     private MessageEntity() // For EF Core
     {
@@ -13,7 +13,7 @@ public sealed class MessageEntity
         SentAt = DateTime.UtcNow;
     }
 
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     public string Text { get; set; } = string.Empty;
 

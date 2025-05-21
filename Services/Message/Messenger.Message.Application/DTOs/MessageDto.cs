@@ -2,9 +2,9 @@ namespace Messenger.Message.Application.DTOs;
 
 public sealed class MessageDto
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
 
-    public string Text { get; set; } = string.Empty;
+    public string Text { get; init; } = string.Empty;
 
-    public DateTime SentAt { get; set; }
+    public DateTime SentAt { get; init; }
 }
