@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.Message.Infrastructure.Data;
 
-public sealed class MessageContext : DbContext
+internal sealed class MessageContext : DbContext
 {
     public MessageContext(DbContextOptions<MessageContext> options)
         : base(options)

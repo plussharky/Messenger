@@ -4,7 +4,7 @@ using Messenger.Message.Domain.Entities;
 
 namespace Messenger.Message.Application.Mappings;
 
-public sealed class MessageProfile : Profile
+internal sealed class MessageProfile : Profile
 {
     public MessageProfile()
     {

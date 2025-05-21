@@ -1,6 +1,6 @@
 namespace ChatClient.Models;
 
-public sealed class ChatMessage
+internal sealed class ChatMessage
 {
     public ChatMessage(string text)
     {
