@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Start Project",
+    "Projects": [
+      {
+        "Path": "ChatClient\\ChatClient.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Services\\Message\\Messenger.Message.API\\Messenger.Message.API.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
