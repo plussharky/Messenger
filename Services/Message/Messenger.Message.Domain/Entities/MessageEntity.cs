@@ -17,5 +17,5 @@ public sealed record MessageEntity
 
     public string Text { get; set; } = string.Empty;
 
-    public DateTime SentAt { get; set; }
+    public DateTimeOffset SentAt { get; set; }
 }

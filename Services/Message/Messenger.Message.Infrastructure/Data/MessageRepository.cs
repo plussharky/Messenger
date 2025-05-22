@@ -13,7 +13,7 @@ internal sealed class MessageRepository : IMessageRepository
         _messageContext = context;
     }
 
-    public async Task<IEnumerable<MessageEntity>> GetAllAsync()
+    public async Task<IReadOnlyList<MessageEntity>> GetAllAsync()
     {
         return await _messageContext.Messages
                          .AsNoTracking()

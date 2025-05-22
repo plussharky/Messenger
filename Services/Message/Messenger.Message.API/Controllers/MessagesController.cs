@@ -17,7 +17,7 @@ public sealed class MessagesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<MessageDto>> Get()
+    public async Task<IReadOnlyList<MessageDto>> Get()
     {
         return await _messageService.GetAllMessagesAsync();
     }

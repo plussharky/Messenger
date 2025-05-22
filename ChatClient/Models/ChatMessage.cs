@@ -5,7 +5,7 @@ internal sealed class ChatMessage
     public ChatMessage(string text)
     {
         Text = text;
-        SentAt = DateTime.UtcNow;
+        SentAt = DateTimeOffset.UtcNow;
     }
 
     private ChatMessage()
@@ -16,5 +16,5 @@ internal sealed class ChatMessage
 
     required public string Text { get; init; }
 
-    public DateTime SentAt { get; init; }
+    public DateTimeOffset SentAt { get; init; }
 }

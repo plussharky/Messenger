@@ -6,5 +6,5 @@ public sealed class MessageDto
 
     public string Text { get; init; } = string.Empty;
 
-    public DateTime SentAt { get; init; }
+    public DateTimeOffset SentAt { get; init; }
 }

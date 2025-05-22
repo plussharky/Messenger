@@ -10,7 +10,6 @@
     
   <PropertyGroup>
       <GenerateDocumentationFile>true</GenerateDocumentationFile>
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

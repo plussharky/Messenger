@@ -4,7 +4,7 @@ namespace Messenger.Message.Domain.Repositories;
 
 public interface IMessageRepository
 {
-    Task<MessageEntity> AddAsync(MessageEntity message);
+    public Task<MessageEntity> AddAsync(MessageEntity message);
 
-    Task<IEnumerable<MessageEntity>> GetAllAsync();
+    public Task<IReadOnlyList<MessageEntity>> GetAllAsync();
 }

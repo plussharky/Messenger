@@ -4,7 +4,7 @@ namespace Messenger.Message.Application.Services;
 
 public interface IMessageService
 {
-    Task<IEnumerable<MessageDto>> GetAllMessagesAsync();
+    public Task<IReadOnlyList<MessageDto>> GetAllMessagesAsync();
 
-    Task<MessageDto> SendMessageAsync(CreateMessageDto createMessageDto);
+    public Task<MessageDto> SendMessageAsync(CreateMessageDto createMessageDto);
 }
