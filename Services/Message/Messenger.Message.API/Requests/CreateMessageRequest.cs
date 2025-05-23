@@ -1,4 +1,4 @@
-namespace Messenger.Message.API.Requests;
+namespace Messenger.Message.Api.Requests;
 
 public sealed class CreateMessageRequest
 {

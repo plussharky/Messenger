@@ -7,7 +7,7 @@
         "Action": "Start"
       },
       {
-        "Path": "Services\\Message\\Messenger.Message.API\\Messenger.Message.API.csproj",
+        "Path": "Services\\Message\\Messenger.Message.Api\\Messenger.Message.Api.csproj",
         "Action": "Start"
       }
     ]

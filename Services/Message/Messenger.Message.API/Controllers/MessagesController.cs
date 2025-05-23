@@ -1,9 +1,9 @@
-using Messenger.Message.API.Requests;
+using Messenger.Message.Api.Requests;
 using Messenger.Message.Application.DTOs;
 using Messenger.Message.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Messenger.Message.API.Controllers;
+namespace Messenger.Message.Api.Controllers;
 
 [ApiController]
 [Route("api/messages")]

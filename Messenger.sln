@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.Domain", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.Application", "Services\Message\Messenger.Message.Application\Messenger.Message.Application.csproj", "{588C4E91-155D-4317-99CF-365783D4374E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.API", "Services\Message\Messenger.Message.API\Messenger.Message.API.csproj", "{F53745E9-2580-4D66-BEED-7714A7F27754}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Message.Api", "Services\Message\Messenger.Message.API\Messenger.Message.Api.csproj", "{F53745E9-2580-4D66-BEED-7714A7F27754}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D21206F-5672-4A91-B7D0-AC775C40B6EF}"
 	ProjectSection(SolutionItems) = preProject
