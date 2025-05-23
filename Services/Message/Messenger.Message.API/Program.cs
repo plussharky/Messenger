@@ -15,7 +15,7 @@ builder.Services.AddAutoMapper(typeof(MessageProfile));
 
 builder.Services.AddDomain()
     .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services.AddCors(options =>
 {
