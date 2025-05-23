@@ -1,4 +1,4 @@
-namespace Messenger.Message.Application.Services;
+namespace Messenger.Messages.Application.Services;
 
 internal sealed class SystemTimeProvider : ITimeProvider
 {

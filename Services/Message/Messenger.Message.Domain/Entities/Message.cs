@@ -1,4 +1,4 @@
-namespace Messenger.Message.Domain.Entities;
+namespace Messenger.Messages.Domain.Entities;
 
 public sealed record Message
 {
@@ -7,15 +7,15 @@ public sealed record Message
         Text = string.Empty;
     }
 
-    public Message(string text)
+    public Message(string text, DateTimeOffset sentAt)
     {
         Text = text;
-        SentAt = DateTime.UtcNow;
+        SentAt = sentAt;
     }
 
     public int Id { get; init; }
 
     public string Text { get; set; } = string.Empty;
 
-    public DateTimeOffset SentAt { get; set; }
+    required public DateTimeOffset SentAt { get; set; }
 }

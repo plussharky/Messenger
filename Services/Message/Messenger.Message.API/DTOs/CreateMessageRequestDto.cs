@@ -1,4 +1,4 @@
-namespace Messenger.Message.Api.Requests;
+namespace Messenger.Messages.Api.Requests;
 
 public sealed class CreateMessageRequestDto
 {

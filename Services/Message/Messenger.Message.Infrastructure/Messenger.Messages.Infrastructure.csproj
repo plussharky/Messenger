@@ -1,12 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Messenger.Message.Domain\Messenger.Message.Domain.csproj" />
-    <ProjectReference Include="..\Messenger.Message.Application\Messenger.Message.Application.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
@@ -17,6 +12,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Messenger.Message.Application\Messenger.Messages.Application.csproj" />
+    <ProjectReference Include="..\Messenger.Message.Domain\Messenger.Messages.Domain.csproj" />
   </ItemGroup>
 
 </Project> 

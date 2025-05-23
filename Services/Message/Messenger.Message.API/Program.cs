@@ -1,7 +1,7 @@
-using Messenger.Message.Api.Mappings;
-using Messenger.Message.Application;
-using Messenger.Message.Domain;
-using Messenger.Message.Infrastructure;
+using Messenger.Messages.Api.Mappings;
+using Messenger.Messages.Application;
+using Messenger.Messages.Domain;
+using Messenger.Messages.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

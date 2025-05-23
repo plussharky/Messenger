@@ -1,23 +1,18 @@
-using Messenger.Message.Infrastructure.Data;
+using Messenger.Messages.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Messenger.Message.Infrastructure.Services;
+namespace Messenger.Messages.Infrastructure.Services;
 
-internal sealed class MigrationHostedService : IHostedService
-{
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<MigrationHostedService> _logger;
-
-    public MigrationHostedService(
+internal sealed class MigrationHostedService(
         IServiceProvider serviceProvider,
         ILogger<MigrationHostedService> logger)
-    {
-        _serviceProvider = serviceProvider;
-        _logger = logger;
-    }
+    : IHostedService
+{
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
+    private readonly ILogger<MigrationHostedService> _logger = logger;
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {

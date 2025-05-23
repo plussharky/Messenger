@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Messenger.Message.Infrastructure.Data.Migrations;
+namespace Messenger.Messages.Infrastructure.Data.Migrations;
 
 /// <inheritdoc />
 public sealed partial class Init : Migration

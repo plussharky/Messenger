@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Messenger.Message.Domain;
+namespace Messenger.Messages.Domain;
 
 public static class DomainServiceCollectionExtensions
 {

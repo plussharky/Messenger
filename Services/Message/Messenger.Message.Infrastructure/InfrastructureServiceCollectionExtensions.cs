@@ -1,10 +1,10 @@
-using Messenger.Message.Domain.Repositories;
-using Messenger.Message.Infrastructure.Data;
+using Messenger.Messages.Domain.Repositories;
+using Messenger.Messages.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Messenger.Message.Infrastructure;
+namespace Messenger.Messages.Infrastructure;
 
 public static class InfrastructureServiceCollectionExtensions
 {

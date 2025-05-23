@@ -1,8 +1,9 @@
 using AutoMapper;
-using Messenger.Message.Application.Requests;
-using Messenger.Message.Domain.Repositories;
+using Messenger.Messages.Application.Requests;
+using Messenger.Messages.Domain.Entities;
+using Messenger.Messages.Domain.Repositories;
 
-namespace Messenger.Message.Application.Services;
+namespace Messenger.Messages.Application.Services;
 
 internal sealed class MessageService(IMessageRepository messageRepository, IMapper mapper, ITimeProvider timeProvider)
     : IMessageService
@@ -11,19 +12,19 @@ internal sealed class MessageService(IMessageRepository messageRepository, IMapp
     private readonly IMapper _mapper = mapper;
     private readonly ITimeProvider _timeProvider = timeProvider;
 
-    public async Task<IReadOnlyList<Domain.Entities.Message>> GetAllMessagesAsync()
+    public async Task<IReadOnlyList<Message>> GetAllMessagesAsync()
     {
         var messages = await _messageRepository.GetAllAsync();
-        return _mapper.Map<IReadOnlyList<Domain.Entities.Message>>(messages);
+        return _mapper.Map<IReadOnlyList<Message>>(messages);
     }
 
-    public async Task<Domain.Entities.Message> SendMessageAsync(CreateMessageRequest createMessageDto)
+    public async Task<Message> SendMessageAsync(CreateMessageRequest createMessageDto)
     {
-        var messageEntity = _mapper.Map<Domain.Entities.Message>(createMessageDto);
+        var messageEntity = _mapper.Map<Message>(createMessageDto);
 
         messageEntity.SentAt = _timeProvider.GetCurrentTime();
 
         var savedMessage = await _messageRepository.AddAsync(messageEntity);
-        return _mapper.Map<Domain.Entities.Message>(savedMessage);
+        return _mapper.Map<Message>(savedMessage);
     }
 }

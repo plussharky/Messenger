@@ -1,10 +1,10 @@
 using AutoMapper;
-using Messenger.Message.Api.Requests;
-using Messenger.Message.Application.Requests;
-using Messenger.Message.Application.Services;
+using Messenger.Messages.Api.Requests;
+using Messenger.Messages.Application.Requests;
+using Messenger.Messages.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Messenger.Message.Api.Controllers;
+namespace Messenger.Messages.Api.Controllers;
 
 [ApiController]
 [Route("api/messages")]

@@ -1,8 +1,8 @@
-using Messenger.Message.Application.Mappings;
-using Messenger.Message.Application.Services;
+using Messenger.Messages.Application.Mappings;
+using Messenger.Messages.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Messenger.Message.Application;
+namespace Messenger.Messages.Application;
 
 public static class ApplicationServiceCollectionExtensions
 {

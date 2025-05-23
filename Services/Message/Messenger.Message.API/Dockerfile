@@ -10,24 +10,24 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Копируем csproj и восстанавливаем зависимости
-COPY Services/Message/Messenger.Message.Api/Messenger.Message.Api.csproj Services/Message/Messenger.Message.Api/
-COPY Services/Message/Messenger.Message.Application/Messenger.Message.Application.csproj Services/Message/Messenger.Message.Application/
-COPY Services/Message/Messenger.Message.Domain/Messenger.Message.Domain.csproj Services/Message/Messenger.Message.Domain/
-COPY Services/Message/Messenger.Message.Infrastructure/Messenger.Message.Infrastructure.csproj Services/Message/Messenger.Message.Infrastructure/
+COPY Services/Message/Messenger.Messages.Api/Messenger.Messages.Api.csproj Services/Message/Messenger.Messages.Api/
+COPY Services/Message/Messenger.Messages.Application/Messenger.Messages.Application.csproj Services/Message/Messenger.Messages.Application/
+COPY Services/Message/Messenger.Messages.Domain/Messenger.Messages.Domain.csproj Services/Message/Messenger.Messages.Domain/
+COPY Services/Message/Messenger.Messages.Infrastructure/Messenger.Messages.Infrastructure.csproj Services/Message/Messenger.Messages.Infrastructure/
 
-RUN dotnet restore "Services/Message/Messenger.Message.Api/Messenger.Message.Api.csproj"
+RUN dotnet restore "Services/Message/Messenger.Messages.Api/Messenger.Messages.Api.csproj"
 
 # Копируем все остальные файлы
 COPY . .
 
-WORKDIR /src/Services/Message/Messenger.Message.Api
-RUN dotnet build "Messenger.Message.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR /src/Services/Message/Messenger.Messages.Api
+RUN dotnet build "Messenger.Messages.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Messenger.Message.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Messenger.Messages.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Messenger.Message.Api.dll"]
+ENTRYPOINT ["dotnet", "Messenger.Messages.Api.dll"]

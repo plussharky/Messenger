@@ -1,14 +1,15 @@
+using Messenger.Messages.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Messenger.Message.Infrastructure.Data;
+namespace Messenger.Messages.Infrastructure.Data;
 
 internal sealed class MessageContext : DbContext
 {
     public MessageContext(DbContextOptions<MessageContext> options)
         : base(options)
     {
-        Messages = Set<Domain.Entities.Message>();
+        Messages = Set<Message>();
     }
 
-    required public DbSet<Domain.Entities.Message> Messages { get; set; }
+    required public DbSet<Message> Messages { get; set; }
 }
