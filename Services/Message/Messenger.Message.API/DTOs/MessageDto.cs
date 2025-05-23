@@ -1,4 +1,4 @@
-namespace Messenger.Messages.Application.Requests;
+namespace Messenger.Messages.Api.DTOs;
 
 public sealed class MessageDto
 {

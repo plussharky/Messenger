@@ -18,13 +18,13 @@ internal sealed class MessageService(IMessageRepository messageRepository, IMapp
         return _mapper.Map<IReadOnlyList<Message>>(messages);
     }
 
-    public async Task<Message> SendMessageAsync(CreateMessageRequest createMessageDto)
+    public async Task<Message> SendMessageAsync(CreateMessageRequest createMessageRequest)
     {
-        var messageEntity = _mapper.Map<Message>(createMessageDto);
+        var message = new Message(
+            text: createMessageRequest.Text,
+            sentAt: _timeProvider.GetCurrentTime());
 
-        messageEntity.SentAt = _timeProvider.GetCurrentTime();
-
-        var savedMessage = await _messageRepository.AddAsync(messageEntity);
+        var savedMessage = await _messageRepository.AddAsync(message);
         return _mapper.Map<Message>(savedMessage);
     }
 }

@@ -2,11 +2,6 @@ namespace Messenger.Messages.Domain.Entities;
 
 public sealed record Message
 {
-    private Message() // For EF Core
-    {
-        Text = string.Empty;
-    }
-
     public Message(string text, DateTimeOffset sentAt)
     {
         Text = text;
@@ -17,5 +12,5 @@ public sealed record Message
 
     public string Text { get; set; } = string.Empty;
 
-    required public DateTimeOffset SentAt { get; set; }
+    public DateTimeOffset SentAt { get; set; }
 }

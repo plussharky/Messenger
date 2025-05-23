@@ -1,5 +1,5 @@
 using AutoMapper;
-using Messenger.Messages.Application.Requests;
+using Messenger.Messages.Api.DTOs;
 using Messenger.Messages.Domain.Entities;
 
 namespace Messenger.Messages.Api.Mappings;

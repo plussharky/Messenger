@@ -1,5 +1,5 @@
 using AutoMapper;
-using Messenger.Messages.Api.Requests;
+using Messenger.Messages.Api.DTOs;
 using Messenger.Messages.Application.Requests;
 using Messenger.Messages.Application.Services;
 using Microsoft.AspNetCore.Mvc;
