@@ -1,10 +1,10 @@
-using Messenger.Message.Application.DTOs;
+using Messenger.Message.Application.Requests;
 
 namespace Messenger.Message.Application.Services;
 
 public interface IMessageService
 {
-    public Task<IReadOnlyList<MessageDto>> GetAllMessagesAsync();
+    public Task<IReadOnlyList<Domain.Entities.Message>> GetAllMessagesAsync();
 
-    public Task<MessageDto> SendMessageAsync(CreateMessageDto createMessageDto);
+    public Task<Domain.Entities.Message> SendMessageAsync(CreateMessageRequest createMessageDto);
 }

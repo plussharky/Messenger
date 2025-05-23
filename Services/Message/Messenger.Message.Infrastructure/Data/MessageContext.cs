@@ -9,5 +9,5 @@ internal sealed class MessageContext : DbContext
     {
     }
 
-    required public DbSet<Domain.Entities.MessageEntity> Messages { get; set; }
+    required public DbSet<Domain.Entities.Message> Messages { get; set; }
 }

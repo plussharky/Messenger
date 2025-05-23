@@ -1,12 +1,12 @@
 using AutoMapper;
 using Messenger.Message.Application.Requests;
 
-namespace Messenger.Message.Application.Mappings;
+namespace Messenger.Message.Api.Mappings;
 
 internal sealed class MessageProfile : Profile
 {
     public MessageProfile()
     {
-        CreateMap<CreateMessageRequest, Domain.Entities.Message>();
+        CreateMap<Domain.Entities.Message, MessageDto>();
     }
 }

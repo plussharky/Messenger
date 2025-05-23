@@ -1,13 +1,13 @@
 namespace Messenger.Message.Domain.Entities;
 
-public sealed record MessageEntity
+public sealed record Message
 {
-    private MessageEntity() // For EF Core
+    private Message() // For EF Core
     {
         Text = string.Empty;
     }
 
-    public MessageEntity(string text)
+    public Message(string text)
     {
         Text = text;
         SentAt = DateTime.UtcNow;

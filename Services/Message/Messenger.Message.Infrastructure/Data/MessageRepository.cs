@@ -1,4 +1,3 @@
-using Messenger.Message.Domain.Entities;
 using Messenger.Message.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +8,7 @@ internal sealed class MessageRepository(MessageContext context)
 {
     private readonly MessageContext _messageContext = context;
 
-    public async Task<IReadOnlyList<MessageEntity>> GetAllAsync()
+    public async Task<IReadOnlyList<Domain.Entities.Message>> GetAllAsync()
     {
         return await _messageContext.Messages
                          .AsNoTracking()
@@ -17,7 +16,7 @@ internal sealed class MessageRepository(MessageContext context)
                          .ToListAsync();
     }
 
-    public async Task<MessageEntity> AddAsync(MessageEntity message)
+    public async Task<Domain.Entities.Message> AddAsync(Domain.Entities.Message message)
     {
         var entry = await _messageContext.Messages.AddAsync(message);
         await _messageContext.SaveChangesAsync();

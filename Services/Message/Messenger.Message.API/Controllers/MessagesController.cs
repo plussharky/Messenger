@@ -1,5 +1,6 @@
+using AutoMapper;
 using Messenger.Message.Api.Requests;
-using Messenger.Message.Application.DTOs;
+using Messenger.Message.Application.Requests;
 using Messenger.Message.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,21 +8,23 @@ namespace Messenger.Message.Api.Controllers;
 
 [ApiController]
 [Route("api/messages")]
-public sealed class MessagesController(IMessageService messageService)
+public sealed class MessagesController(IMessageService messageService, IMapper mapper)
     : ControllerBase
 {
     private readonly IMessageService _messageService = messageService;
+    private readonly IMapper _mapper = mapper;
 
     [HttpGet]
     public async Task<IReadOnlyList<MessageDto>> Get()
     {
-        return await _messageService.GetAllMessagesAsync();
+        var messages = await _messageService.GetAllMessagesAsync();
+        return _mapper.Map<IReadOnlyList<MessageDto>>(messages);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateMessageRequest request)
+    public async Task<IActionResult> Post([FromBody] CreateMessageRequestDto request)
     {
-        var message = new CreateMessageDto() { Text = request.Text };
+        var message = new CreateMessageRequest() { Text = request.Text };
         var created = await _messageService.SendMessageAsync(message);
         return Ok(created);
     }

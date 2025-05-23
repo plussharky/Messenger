@@ -1,10 +1,8 @@
-using Messenger.Message.Domain.Entities;
-
 namespace Messenger.Message.Domain.Repositories;
 
 public interface IMessageRepository
 {
-    public Task<MessageEntity> AddAsync(MessageEntity message);
+    public Task<Entities.Message> AddAsync(Entities.Message message);
 
-    public Task<IReadOnlyList<MessageEntity>> GetAllAsync();
+    public Task<IReadOnlyList<Entities.Message>> GetAllAsync();
 }

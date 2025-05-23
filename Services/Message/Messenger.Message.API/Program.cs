@@ -1,5 +1,5 @@
+using Messenger.Message.Api.Mappings;
 using Messenger.Message.Application;
-using Messenger.Message.Application.Services;
 using Messenger.Message.Domain;
 using Messenger.Message.Infrastructure;
 
@@ -11,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(typeof(MessageService).Assembly);
+builder.Services.AddAutoMapper(typeof(MessageProfile));
 
 builder.Services.AddDomain()
     .AddApplication()
