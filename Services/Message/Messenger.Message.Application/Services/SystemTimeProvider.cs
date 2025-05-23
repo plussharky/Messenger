@@ -1,6 +1,6 @@
 namespace Messenger.Message.Application.Services;
 
-public sealed class SystemTimeProvider : ITimeProvider
+internal sealed class SystemTimeProvider : ITimeProvider
 {
     public DateTimeOffset GetCurrentTime()
     {

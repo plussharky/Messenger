@@ -4,7 +4,7 @@ using Messenger.Message.Domain.Repositories;
 
 namespace Messenger.Message.Application.Services;
 
-public sealed class MessageService : IMessageService
+internal sealed class MessageService : IMessageService
 {
     private readonly IMessageRepository _messageRepository;
     private readonly IMapper _mapper;
