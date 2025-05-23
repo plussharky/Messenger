@@ -4,18 +4,12 @@ using Messenger.Message.Domain.Repositories;
 
 namespace Messenger.Message.Application.Services;
 
-internal sealed class MessageService : IMessageService
+internal sealed class MessageService(IMessageRepository messageRepository, IMapper mapper, ITimeProvider timeProvider)
+    : IMessageService
 {
-    private readonly IMessageRepository _messageRepository;
-    private readonly IMapper _mapper;
-    private readonly ITimeProvider _timeProvider;
-
-    public MessageService(IMessageRepository messageRepository, IMapper mapper, ITimeProvider timeProvider)
-    {
-        _messageRepository = messageRepository;
-        _mapper = mapper;
-        _timeProvider = timeProvider;
-    }
+    private readonly IMessageRepository _messageRepository = messageRepository;
+    private readonly IMapper _mapper = mapper;
+    private readonly ITimeProvider _timeProvider = timeProvider;
 
     public async Task<IReadOnlyList<MessageDto>> GetAllMessagesAsync()
     {

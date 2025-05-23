@@ -4,14 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Messenger.Message.Infrastructure.Data;
 
-internal sealed class MessageRepository : IMessageRepository
+internal sealed class MessageRepository(MessageContext context)
+    : IMessageRepository
 {
-    private readonly MessageContext _messageContext;
-
-    public MessageRepository(MessageContext context)
-    {
-        _messageContext = context;
-    }
+    private readonly MessageContext _messageContext = context;
 
     public async Task<IReadOnlyList<MessageEntity>> GetAllAsync()
     {

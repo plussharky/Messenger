@@ -7,14 +7,10 @@ namespace Messenger.Message.Api.Controllers;
 
 [ApiController]
 [Route("api/messages")]
-public sealed class MessagesController : ControllerBase
+public sealed class MessagesController(IMessageService messageService)
+    : ControllerBase
 {
-    private readonly IMessageService _messageService;
-
-    public MessagesController(IMessageService messageService)
-    {
-        _messageService = messageService;
-    }
+    private readonly IMessageService _messageService = messageService;
 
     [HttpGet]
     public async Task<IReadOnlyList<MessageDto>> Get()
