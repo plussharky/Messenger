@@ -15,7 +15,8 @@ builder.Services.AddAutoMapper(typeof(MessageProfile));
 
 builder.Services.AddDomain()
     .AddApplication()
-    .AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection"));
+    .AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."));
 
 builder.Services.AddCors(options =>
 {

@@ -14,8 +14,7 @@ internal sealed class MessageService(IMessageRepository messageRepository, IMapp
 
     public async Task<IReadOnlyList<Message>> GetAllMessagesAsync()
     {
-        var messages = await _messageRepository.GetAllAsync();
-        return _mapper.Map<IReadOnlyList<Message>>(messages);
+        return await _messageRepository.GetAllAsync();
     }
 
     public async Task<Message> SendMessageAsync(CreateMessageRequest createMessageRequest)

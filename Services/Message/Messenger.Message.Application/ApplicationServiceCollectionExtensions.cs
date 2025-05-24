@@ -1,4 +1,3 @@
-using Messenger.Messages.Application.Mappings;
 using Messenger.Messages.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +9,6 @@ public static class ApplicationServiceCollectionExtensions
     {
         services.AddScoped<IMessageService, MessageService>();
         services.AddSingleton<ITimeProvider, SystemTimeProvider>();
-        services.AddAutoMapper(typeof(MessageProfile));
         return services;
     }
 }
