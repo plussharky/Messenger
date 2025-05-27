@@ -11,5 +11,5 @@ internal sealed class MessageContext : DbContext
         Messages = Set<Message>();
     }
 
-    required public DbSet<Message> Messages { get; set; }
+    public DbSet<Message> Messages { get; set; }
 }

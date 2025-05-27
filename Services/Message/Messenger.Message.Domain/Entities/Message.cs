@@ -13,4 +13,6 @@ public sealed record Message
     public string Text { get; set; } = string.Empty;
 
     public DateTimeOffset SentAt { get; set; }
+
+    public DateTimeOffset? UpdatedAt { get; set; } = null;
 }
