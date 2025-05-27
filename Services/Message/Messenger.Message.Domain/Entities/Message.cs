@@ -2,13 +2,14 @@ namespace Messenger.Messages.Domain.Entities;
 
 public sealed record Message
 {
-    public Message(string text, DateTimeOffset sentAt)
+    public Message(Guid id, string text, DateTimeOffset sentAt)
     {
+        Id = id;
         Text = text;
         SentAt = sentAt;
     }
 
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
     public string Text { get; set; } = string.Empty;
 

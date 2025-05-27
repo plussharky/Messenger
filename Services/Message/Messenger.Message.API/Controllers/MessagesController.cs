@@ -18,11 +18,16 @@ public sealed class MessagesController(IMessageService messageService, IMapper m
         return mapper.Map<IReadOnlyList<MessageDto>>(messages);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CreateMessageRequestDto request)
+    [HttpPut("{messageId:guid}")]
+    public async Task<IActionResult> Upsert(Guid messageId, [FromBody] CreateMessageRequestDto request)
     {
-        var message = new CreateMessageRequest() { Text = request.Text };
+        var message = new SendMessageRequest()
+        {
+            Id = messageId,
+            Text = request.Text,
+        };
         var created = await messageService.SendMessageAsync(message);
-        return Ok(created);
+
+        return Ok(mapper.Map<MessageDto>(created));
     }
 }

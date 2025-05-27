@@ -14,15 +14,35 @@
     <MudList T="ChatMessage" Dense="true">
         @foreach (var msg in messages)
         {
-            <MudListItem T="ChatMessage" Value="msg">@msg.Text</MudListItem>
+            <MudListItem T="ChatMessage" Value="msg">
+                @if (editMessageId == msg.Id)
+                {
+                    <MudTextField @bind-Value="editMessageText" Variant="Variant.Filled" />
+                    <MudButton OnClick="@(() => SaveEdit(msg.Id))" Color="Color.Success" Size="Size.Small">Save</MudButton>
+                    <MudButton OnClick="CancelEdit" Color="Color.Secondary" Size="Size.Small">Cancel</MudButton>
+                }
+                else
+                {
+                    @msg.Text
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                               OnClick="@(() => StartEdit(msg))"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               Class="ml-2">
+                        Edit
+                    </MudButton>
+                }
+            </MudListItem>
         }
     </MudList>
-
 </MudContainer>
 
 @code {
     private string newMessage = "";
     private List<ChatMessage> messages = new();
+
+    private Guid? editMessageId = null;
+    private string editMessageText = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,11 +56,47 @@
 
     private async Task SendMessage()
     {
-        if (!string.IsNullOrWhiteSpace(newMessage))
+        if (string.IsNullOrWhiteSpace(newMessage))
         {
-            await Http.PostAsJsonAsync("api/Messages", new { Text = newMessage });
-            newMessage = "";
-            await LoadMessages();
+            return;
         }
+        var messageId = Guid.NewGuid();
+        var sendMessageRequest = new SendMessageRequest()
+        {
+            Text = newMessage,
+        };
+        await Http.PutAsJsonAsync($"api/Messages/{messageId}", sendMessageRequest);
+        newMessage = "";
+        await LoadMessages();
+    }
+
+    private void StartEdit(ChatMessage message)
+    {
+        editMessageId = message.Id;
+        editMessageText = message.Text;
+    }
+
+    private async Task SaveEdit(Guid messageId)
+    {
+        if (string.IsNullOrWhiteSpace(editMessageText))
+        {
+            return;
+        }
+
+        var sendMessageRequest = new SendMessageRequest()
+        {
+            Text = editMessageText,
+        };
+        await Http.PutAsJsonAsync($"api/Messages/{messageId}", sendMessageRequest);
+
+        editMessageId = null;
+        editMessageText = "";
+        await LoadMessages();
+    }
+
+    private void CancelEdit()
+    {
+        editMessageId = null;
+        editMessageText = "";
     }
 }

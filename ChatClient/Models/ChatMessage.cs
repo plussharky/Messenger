@@ -12,9 +12,11 @@ internal sealed class ChatMessage
     {
     }
 
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
     required public string Text { get; init; }
 
     public DateTimeOffset SentAt { get; init; }
+
+    public DateTimeOffset? UpdatedAt { get; init; }
 }

@@ -1,15 +1,13 @@
-using AutoMapper;
 using Messenger.Messages.Application.Requests;
 using Messenger.Messages.Domain.Entities;
 using Messenger.Messages.Domain.Repositories;
 
 namespace Messenger.Messages.Application.Services;
 
-internal sealed class MessageService(IMessageRepository messageRepository, IMapper mapper, ITimeProvider timeProvider)
+internal sealed class MessageService(IMessageRepository messageRepository, ITimeProvider timeProvider)
     : IMessageService
 {
     private readonly IMessageRepository _messageRepository = messageRepository;
-    private readonly IMapper _mapper = mapper;
     private readonly ITimeProvider _timeProvider = timeProvider;
 
     public async Task<IReadOnlyList<Message>> GetAllMessagesAsync()
@@ -17,13 +15,26 @@ internal sealed class MessageService(IMessageRepository messageRepository, IMapp
         return await _messageRepository.GetAllAsync();
     }
 
-    public async Task<Message> SendMessageAsync(CreateMessageRequest createMessageRequest)
+    public async Task<Message> SendMessageAsync(SendMessageRequest sendMessageRequest)
     {
-        var message = new Message(
-            text: createMessageRequest.Text,
-            sentAt: _timeProvider.GetCurrentTime());
+        var message = await _messageRepository.GetMessageAsync(sendMessageRequest.Id);
 
-        var savedMessage = await _messageRepository.AddAsync(message);
-        return _mapper.Map<Message>(savedMessage);
+        if (message == null)
+        {
+            message = new Message(
+                id: sendMessageRequest.Id,
+                text: sendMessageRequest.Text,
+                sentAt: _timeProvider.GetCurrentTime());
+
+            message = await _messageRepository.CreateAsync(message);
+        }
+        else
+        {
+            message.Text = sendMessageRequest.Text;
+            message.UpdatedAt = _timeProvider.GetCurrentTime();
+            message = await _messageRepository.UpdateAsync(message);
+        }
+
+        return message;
     }
 }

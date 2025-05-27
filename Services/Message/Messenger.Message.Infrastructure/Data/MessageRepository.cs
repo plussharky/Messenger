@@ -17,10 +17,30 @@ internal sealed class MessageRepository(MessageContext context)
                          .ToListAsync();
     }
 
-    public async Task<Message> AddAsync(Message message)
+    public async Task<Message> CreateAsync(Message message)
     {
         var entry = await _messageContext.Messages.AddAsync(message);
         await _messageContext.SaveChangesAsync();
         return entry.Entity;
+    }
+
+    public async Task<Message?> GetMessageAsync(Guid id)
+    {
+        return await _messageContext.Messages
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == id);
+    }
+
+    public async Task<Message> UpdateAsync(Message message)
+    {
+        var entry = _messageContext.Messages.Update(message);
+        await _messageContext.SaveChangesAsync();
+        return entry.Entity;
+    }
+
+    public async Task DeleteAsync(Message message)
+    {
+        _messageContext.Messages.Remove(message);
+        await _messageContext.SaveChangesAsync();
     }
 }

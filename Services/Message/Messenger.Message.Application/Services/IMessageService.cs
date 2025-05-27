@@ -7,5 +7,5 @@ public interface IMessageService
 {
     Task<IReadOnlyList<Message>> GetAllMessagesAsync();
 
-    Task<Message> SendMessageAsync(CreateMessageRequest createMessageRequest);
+    Task<Message> SendMessageAsync(SendMessageRequest sendMessageRequest);
 }
