@@ -16,14 +16,14 @@ public sealed class MessengerWebApplicationFactory : WebApplicationFactory<Progr
     {
         builder.ConfigureServices(services =>
         {
-            var descriptor1 = services.SingleOrDefault(d =>
+            var dbContextOptionsDescriptor = services.SingleOrDefault(d =>
                 d.ServiceType == typeof(IDbContextOptionsConfiguration<MessageContext>)) !;
 
-            var descriptor2 = services.SingleOrDefault(d =>
+            var migrationHostedServiceDescriptor = services.SingleOrDefault(d =>
                 d.ServiceType == typeof(IHostedService) && d.ImplementationType == typeof(MigrationHostedService)) !;
 
-            services.Remove(descriptor1);
-            services.Remove(descriptor2);
+            services.Remove(dbContextOptionsDescriptor);
+            services.Remove(migrationHostedServiceDescriptor);
 
             services.AddDbContext<MessageContext>(options =>
             {

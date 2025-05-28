@@ -37,7 +37,8 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
     {
         // Arrange
         var messageId = Guid.NewGuid();
-        var createDto = new CreateMessageRequestDto { Text = "Hello" };
+        var messageText = "Hello";
+        var createDto = new CreateMessageRequestDto { Text = messageText };
 
         // Act
         var response = await _client.PutAsJsonAsync($"/api/messages/{messageId}", createDto);
@@ -48,7 +49,7 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
         // Assert
         messages.Should().HaveCount(1);
         messages[0].Id.Should().Be(messageId);
-        messages[0].Text.Should().Be("Hello");
+        messages[0].Text.Should().Be(messageText);
     }
 
     [Fact]
@@ -57,8 +58,10 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
         // Arrange
         var id1 = Guid.NewGuid();
         var id2 = Guid.NewGuid();
-        var firstMessage = new CreateMessageRequestDto { Text = "First" };
-        var secondMessage = new CreateMessageRequestDto { Text = "Second" };
+        var firstTextMessage = "First";
+        var secondTextMessage = "Second";
+        var firstMessage = new CreateMessageRequestDto { Text = firstTextMessage };
+        var secondMessage = new CreateMessageRequestDto { Text = secondTextMessage };
 
         // Act
         await _client.PutAsJsonAsync($"/api/messages/{id1}", firstMessage);
@@ -69,9 +72,9 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
         // Assert
         messages.Should().HaveCount(2);
         messages[0].Id.Should().Be(id2);
-        messages[0].Text.Should().Be("Second");
+        messages[0].Text.Should().Be(secondTextMessage);
         messages[1].Id.Should().Be(id1);
-        messages[1].Text.Should().Be("First");
+        messages[1].Text.Should().Be(firstTextMessage);
     }
 
     [Fact]
