@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Messages.ComponentTests", "Services\Message\Messenger.Messages.ComponentTests\Messenger.Messages.ComponentTests.csproj", "{E29F0FB2-D87B-4474-ADD2-E9B2F33B3865}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{F53745E9-2580-4D66-BEED-7714A7F27754}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F53745E9-2580-4D66-BEED-7714A7F27754}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F53745E9-2580-4D66-BEED-7714A7F27754}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E29F0FB2-D87B-4474-ADD2-E9B2F33B3865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E29F0FB2-D87B-4474-ADD2-E9B2F33B3865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E29F0FB2-D87B-4474-ADD2-E9B2F33B3865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E29F0FB2-D87B-4474-ADD2-E9B2F33B3865}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{0794452A-018F-4CE2-B340-B37D0BAD6FCE} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
 		{588C4E91-155D-4317-99CF-365783D4374E} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
 		{F53745E9-2580-4D66-BEED-7714A7F27754} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
+		{E29F0FB2-D87B-4474-ADD2-E9B2F33B3865} = {75086ACF-75A4-42B3-90E3-85B3DBDCC64F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09543B07-FE13-4BFF-B667-FD83F79AFF70}
