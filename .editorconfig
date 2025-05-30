@@ -539,6 +539,14 @@ csharp_prefer_static_anonymous_function = true:suggestion
 csharp_style_prefer_readonly_struct = true:suggestion
 csharp_style_prefer_readonly_struct_member = true:suggestion
 
+dotnet_diagnostic.SA1206.severity = none
+
+# Сделать ошибкой не-IDE0036-порядок
+dotnet_diagnostic.IDE0036.severity = error
+
+# Порядок модификаторов (доступность, static, new …, readonly, unsafe, required, async)
+csharp_preferred_modifier_order = public,protected,internal,private,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,required,volatile,async
+
 [*Id.cs]
 
 # CA1036: Override methods on comparable types

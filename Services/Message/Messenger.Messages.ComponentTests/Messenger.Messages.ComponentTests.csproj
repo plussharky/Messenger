@@ -16,5 +16,5 @@
     <ProjectReference Include="..\Messenger.Message.API\Messenger.Messages.Api.csproj" />
     <ProjectReference Include="..\Messenger.Message.Infrastructure\Messenger.Messages.Infrastructure.csproj" />
   </ItemGroup>
-
+	
 </Project>

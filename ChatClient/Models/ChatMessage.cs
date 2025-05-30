@@ -14,7 +14,7 @@ internal sealed class ChatMessage
 
     public Guid Id { get; init; }
 
-    required public string Text { get; init; }
+    public required string Text { get; init; }
 
     public DateTimeOffset SentAt { get; init; }
 
