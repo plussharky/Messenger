@@ -22,13 +22,13 @@ internal sealed class MessageService(IMessageRepository messageRepository, ITime
         if (message == null)
         {
             message = new Message(
-                id: sendMessageRequest.Id,
-                text: sendMessageRequest.Text,
-                sentAt: _timeProvider.GetCurrentTime());
+                sendMessageRequest.Id,
+                sendMessageRequest.Text,
+                _timeProvider.GetCurrentTime());
 
             await _messageRepository.CreateAsync(message);
         }
-        else
+        else if (message.Text != sendMessageRequest.Text)
         {
             message.Text = sendMessageRequest.Text;
             message.UpdatedAt = _timeProvider.GetCurrentTime();
