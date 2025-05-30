@@ -38,11 +38,13 @@
 </MudContainer>
 
 @code {
-    private string newMessage = "";
+    private const string MessagesApiRoute = "api/Messages";
+
+    private string newMessage = string.Empty;
     private List<ChatMessage> messages = new();
 
     private Guid? editMessageId = null;
-    private string editMessageText = "";
+    private string editMessageText = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,22 +53,38 @@
 
     private async Task LoadMessages()
     {
-        messages = await Http.GetFromJsonAsync<List<ChatMessage>>("api/Messages") ?? new List<ChatMessage>();
+        messages = await Http.GetFromJsonAsync<List<ChatMessage>>(MessagesApiRoute) ?? new List<ChatMessage>();
     }
 
     private async Task SendMessage()
     {
-        if (string.IsNullOrWhiteSpace(newMessage))
+        await UpsertMessageAsync(Guid.NewGuid(), newMessage);
+
+        newMessage = string.Empty;
+    }
+
+    private async Task SaveEdit(Guid messageId)
+    {
+        await UpsertMessageAsync(messageId, editMessageText);
+
+        editMessageId = null;
+        editMessageText = string.Empty;
+    }
+
+    private async Task UpsertMessageAsync(Guid messageId, string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
         {
             return;
         }
-        var messageId = Guid.NewGuid();
-        var sendMessageRequest = new SendMessageRequest()
+
+        var sendMessageRequest = new SendMessageRequest
         {
-            Text = newMessage,
+            Text = text
         };
-        await Http.PutAsJsonAsync($"api/Messages/{messageId}", sendMessageRequest);
-        newMessage = "";
+
+        await Http.PutAsJsonAsync($"{MessagesApiRoute}/{messageId}", sendMessageRequest);
+
         await LoadMessages();
     }
 
@@ -76,27 +94,9 @@
         editMessageText = message.Text;
     }
 
-    private async Task SaveEdit(Guid messageId)
-    {
-        if (string.IsNullOrWhiteSpace(editMessageText))
-        {
-            return;
-        }
-
-        var sendMessageRequest = new SendMessageRequest()
-        {
-            Text = editMessageText,
-        };
-        await Http.PutAsJsonAsync($"api/Messages/{messageId}", sendMessageRequest);
-
-        editMessageId = null;
-        editMessageText = "";
-        await LoadMessages();
-    }
-
     private void CancelEdit()
     {
         editMessageId = null;
-        editMessageText = "";
+        editMessageText = string.Empty;
     }
 }
