@@ -9,19 +9,18 @@ internal sealed class MessageRepository(MessageContext context)
 {
     private readonly MessageContext _messageContext = context;
 
+    public async Task CreateAsync(Message message)
+    {
+        await _messageContext.Messages.AddAsync(message);
+        await _messageContext.SaveChangesAsync();
+    }
+
     public async Task<IReadOnlyList<Message>> GetAllAsync()
     {
         return await _messageContext.Messages
                          .AsNoTracking()
                          .OrderByDescending(m => m.SentAt)
                          .ToListAsync();
-    }
-
-    public async Task<Message> CreateAsync(Message message)
-    {
-        var entry = await _messageContext.Messages.AddAsync(message);
-        await _messageContext.SaveChangesAsync();
-        return entry.Entity;
     }
 
     public async Task<Message?> GetMessageAsync(Guid id)
@@ -31,16 +30,16 @@ internal sealed class MessageRepository(MessageContext context)
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 
-    public async Task<Message> UpdateAsync(Message message)
+    public async Task UpdateAsync(Message message)
     {
-        var entry = _messageContext.Messages.Update(message);
+        _messageContext.Messages.Update(message);
         await _messageContext.SaveChangesAsync();
-        return entry.Entity;
     }
 
-    public async Task DeleteAsync(Message message)
+    public async Task DeleteAsync(Guid id)
     {
-        _messageContext.Messages.Remove(message);
-        await _messageContext.SaveChangesAsync();
+        await _messageContext.Messages
+            .Where(m => m.Id == id)
+            .ExecuteDeleteAsync();
     }
 }

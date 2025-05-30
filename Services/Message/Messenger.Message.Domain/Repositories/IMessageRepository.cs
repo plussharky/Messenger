@@ -4,13 +4,13 @@ namespace Messenger.Messages.Domain.Repositories;
 
 public interface IMessageRepository
 {
-    Task<Message> CreateAsync(Message message);
+    Task CreateAsync(Message message);
 
     Task<Message?> GetMessageAsync(Guid id);
 
-    Task<Message> UpdateAsync(Message message);
-
-    Task DeleteAsync(Message message);
-
     Task<IReadOnlyList<Message>> GetAllAsync();
+
+    Task UpdateAsync(Message message);
+
+    Task DeleteAsync(Guid id);
 }

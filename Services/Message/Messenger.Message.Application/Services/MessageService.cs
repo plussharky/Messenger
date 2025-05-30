@@ -26,13 +26,13 @@ internal sealed class MessageService(IMessageRepository messageRepository, ITime
                 text: sendMessageRequest.Text,
                 sentAt: _timeProvider.GetCurrentTime());
 
-            message = await _messageRepository.CreateAsync(message);
+            await _messageRepository.CreateAsync(message);
         }
         else
         {
             message.Text = sendMessageRequest.Text;
             message.UpdatedAt = _timeProvider.GetCurrentTime();
-            message = await _messageRepository.UpdateAsync(message);
+            await _messageRepository.UpdateAsync(message);
         }
 
         return message;
