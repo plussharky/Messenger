@@ -8,12 +8,22 @@
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.13.1" PrivateAssets="all" />
     </ItemGroup>
     
-  <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>latest</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <_ProjectBaseName>$([System.String]::Copy($(MSBuildProjectName)).Substring(0, $([MSBuild]::Subtract($(MSBuildProjectName.LastIndexOf('.')), -1))))</_ProjectBaseName>
+    </PropertyGroup>
+
+    <ItemGroup Condition="!$(MSBuildProjectName.EndsWith('.ComponentTests'))">
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(_ProjectBaseName)ComponentTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
 </Project> 
