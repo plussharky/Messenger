@@ -1,4 +1,3 @@
-using Messenger.Messages.Domain.Repositories;
 using Messenger.Messages.Infrastructure.Data;
 using Messenger.Messages.Infrastructure.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -29,8 +28,6 @@ public sealed class MessengerWebApplicationFactory : WebApplicationFactory<Progr
             {
                 options.UseInMemoryDatabase("InMemoryDbForTesting");
             });
-
-            services.AddScoped<IMessageRepository, MessageRepository>();
         });
     }
 
