@@ -33,10 +33,8 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
     {
         // Arrange
         var messageId = _fixture.Create<Guid>();
-        var messageText = _fixture.Create<string>();
-        var createDto = _fixture.Build<CreateMessageRequestDto>()
-            .With(x => x.Text, messageText)
-            .Create();
+        var createDto = _fixture.Create<CreateMessageRequestDto>();
+        var messageText = createDto.Text;
 
         // Act
         var response = await _client.PutAsJsonAsync($"{MessagesEndpoint}/{messageId}", createDto);
@@ -56,14 +54,10 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
         // Arrange
         var id1 = _fixture.Create<Guid>();
         var id2 = _fixture.Create<Guid>();
-        var firstTextMessage = _fixture.Create<string>();
-        var secondTextMessage = _fixture.Create<string>();
-        var firstMessage = _fixture.Build<CreateMessageRequestDto>()
-            .With(x => x.Text, firstTextMessage)
-            .Create();
-        var secondMessage = _fixture.Build<CreateMessageRequestDto>()
-            .With(x => x.Text, secondTextMessage)
-            .Create();
+        var firstMessage = _fixture.Create<CreateMessageRequestDto>();
+        var secondMessage = _fixture.Create<CreateMessageRequestDto>();
+        var firstTextMessage = firstMessage.Text;
+        var secondTextMessage = secondMessage.Text;
 
         // Act
         await _client.PutAsJsonAsync($"{MessagesEndpoint}/{id1}", firstMessage);
@@ -84,23 +78,21 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
     {
         // Arrange
         var messageId = _fixture.Create<Guid>();
-        var initialTextMessage = _fixture.Create<string>();
-        var updatedTextMessage = _fixture.Create<string>();
-        var initialMessage = _fixture.Build<CreateMessageRequestDto>()
-            .With(x => x.Text, initialTextMessage)
-            .Create();
-        var updatedMessage = _fixture.Build<CreateMessageRequestDto>()
-            .With(x => x.Text, updatedTextMessage)
-            .Create();
-
-        var initialTime = DateTimeOffset.UtcNow;
+        var initialMessage = _fixture.Create<CreateMessageRequestDto>();
+        var updatedMessage = _fixture.Create<CreateMessageRequestDto>();
+        var initialTextMessage = initialMessage.Text;
+        var updatedTextMessage = updatedMessage.Text;
+        var initialTime = _fixture.Create<DateTimeOffset>();
         var updatedTime = initialTime.AddMinutes(1);
 
         // Act
         var request1 = new HttpRequestMessage(HttpMethod.Put, $"{MessagesEndpoint}/{messageId}")
         {
             Content = JsonContent.Create(initialMessage),
-            Headers = { { "X-Current-Time", initialTime.ToString("O") } },
+            Headers =
+            {
+                { "X-Current-Time", initialTime.ToString("O") },
+            },
         };
         var response1 = await _client.SendAsync(request1);
         response1.EnsureSuccessStatusCode();
@@ -109,7 +101,10 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
         var request2 = new HttpRequestMessage(HttpMethod.Put, $"{MessagesEndpoint}/{messageId}")
         {
             Content = JsonContent.Create(updatedMessage),
-            Headers = { { "X-Current-Time", updatedTime.ToString("O") } },
+            Headers =
+            {
+                { "X-Current-Time", updatedTime.ToString("O") },
+            },
         };
         var response2 = await _client.SendAsync(request2);
         response2.EnsureSuccessStatusCode();
@@ -124,6 +119,48 @@ public sealed class MessagesControllerTests(MessengerWebApplicationFactory facto
         msg1.Text.Should().Be(initialTextMessage);
         messages[0].Text.Should().Be(updatedTextMessage);
         messages[0].UpdatedAt.Should().BeAfter(msg1.SentAt);
+    }
+
+    [Fact]
+    public async Task SendMessageWithSameText_ShouldNotUpdateTimestamp()
+    {
+        // Arrange
+        var messageId = _fixture.Create<Guid>();
+        var initialMessage = _fixture.Create<CreateMessageRequestDto>();
+        var initialTime = _fixture.Create<DateTimeOffset>();
+        var updatedTime = initialTime.AddMinutes(1);
+
+        // Act
+        var request1 = new HttpRequestMessage(HttpMethod.Put, $"{MessagesEndpoint}/{messageId}")
+        {
+            Content = JsonContent.Create(initialMessage),
+            Headers =
+            {
+                { "X-Current-Time", initialTime.ToString("O") },
+            },
+        };
+        var response1 = await _client.SendAsync(request1);
+        response1.EnsureSuccessStatusCode();
+        var msg1 = await response1.Content.ReadFromJsonAsync<MessageDto>();
+
+        var request2 = new HttpRequestMessage(HttpMethod.Put, $"{MessagesEndpoint}/{messageId}")
+        {
+            Content = JsonContent.Create(initialMessage),
+            Headers =
+            {
+                { "X-Current-Time", updatedTime.ToString("O") },
+            },
+        };
+        var response2 = await _client.SendAsync(request2);
+        response2.EnsureSuccessStatusCode();
+        var msg2 = await response2.Content.ReadFromJsonAsync<MessageDto>();
+
+        // Assert
+        msg1.Should().NotBeNull();
+        msg2.Should().NotBeNull();
+        msg2.Text.Should().Be(msg1.Text);
+        msg2.UpdatedAt.Should().Be(msg1.UpdatedAt);
+        msg2.SentAt.Should().Be(msg1.SentAt);
     }
 
     async Task IAsyncLifetime.InitializeAsync()

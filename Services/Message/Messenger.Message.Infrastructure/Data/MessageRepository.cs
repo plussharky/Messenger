@@ -18,9 +18,9 @@ internal sealed class MessageRepository(MessageContext context)
     public async Task<IReadOnlyList<Message>> GetAllAsync()
     {
         return await _messageContext.Messages
-                         .AsNoTracking()
-                         .OrderByDescending(m => m.SentAt)
-                         .ToListAsync();
+            .AsNoTracking()
+            .OrderByDescending(m => m.SentAt)
+            .ToListAsync();
     }
 
     public async Task<Message?> GetMessageAsync(Guid id)
