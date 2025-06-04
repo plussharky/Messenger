@@ -1,5 +1,6 @@
 using Dapper;
 using Messenger.Identity.Core.Exceptions;
+using Messenger.Identity.Core.Models;
 using Npgsql;
 
 namespace Messenger.Identity.Core.Services;
@@ -59,5 +60,38 @@ internal sealed class UserService(
             await transaction.RollbackAsync();
             throw;
         }
+    }
+
+    public async Task<User?> AuthenticateUserAsync(string email, string password)
+    {
+        using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync();
+
+        var credentials = await connection.QueryFirstOrDefaultAsync<UserCredentials>(
+            "SELECT user_id, email, password_hash, salt FROM user_credentials WHERE email = @Email",
+            new { Email = email });
+
+        if (credentials == null)
+        {
+            return null;
+        }
+
+        var isValidPassword = BCrypt.Net.BCrypt.Verify(password, credentials.PasswordHash);
+        if (!isValidPassword)
+        {
+            return null;
+        }
+
+        return await GetUserByIdAsync(credentials.UserId);
+    }
+
+    public async Task<User?> GetUserByIdAsync(Guid userId)
+    {
+        using var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync();
+
+        return await connection.QueryFirstOrDefaultAsync<User>(
+            "SELECT id, created_at FROM users WHERE id = @Id",
+            new { Id = userId });
     }
 }

@@ -2,8 +2,8 @@ using FluentMigrator;
 
 namespace Messenger.Identity.Core.Database.Migrations;
 
-[Migration(20250604_001)]
-internal sealed class CreateUsersTable : Migration
+[Migration(20250604_001, TransactionBehavior.Default)]
+public sealed class CreateUsersTable : Migration
 {
     public override void Up()
     {

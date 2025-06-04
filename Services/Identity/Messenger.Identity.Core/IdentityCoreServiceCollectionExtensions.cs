@@ -1,3 +1,4 @@
+using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
 using Messenger.Identity.Core.Services;
@@ -9,6 +10,8 @@ public static class IdentityCoreServiceCollectionExtensions
 {
     public static IServiceCollection AddIdentityCoreServices(this IServiceCollection services, string connectionString)
     {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+
         services
             .AddFluentMigratorCore()
             .ConfigureRunner(rb => rb
@@ -21,9 +24,9 @@ public static class IdentityCoreServiceCollectionExtensions
 
         services.AddHostedService<DatabaseMigrationService>();
         services.AddSingleton(connectionString);
-        services.AddScoped<IUserService, UserService>();
         services.AddSingleton<ITimeProvider, SystemTimeProvider>();
-
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITokenService, TokenService>();
         return services;
     }
 }
