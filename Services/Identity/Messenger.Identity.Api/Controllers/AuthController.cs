@@ -9,7 +9,10 @@ namespace Messenger.Identity.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public sealed class AuthController(IUserService userService, ITokenService tokenService)
+public sealed class AuthController(
+    IUserService userService,
+    ITokenService tokenService,
+    IRefreshTokenService refreshTokenService)
     : ControllerBase
 {
     [HttpPost("register")]
@@ -49,16 +52,60 @@ public sealed class AuthController(IUserService userService, ITokenService token
             var claims = new List<Claim>
             {
                 new (ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new (ClaimTypes.Email, request.Email),
             };
 
             var accessToken = tokenService.GenerateAccessToken(claims);
-            var refreshToken = tokenService.GenerateRefreshToken();
+            var refreshToken = (await refreshTokenService.CreateAsync(user.Id)).Token;
 
-            return Ok(new LoginResponseDto()
+            return Ok(new LoginResponseDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
+            });
+        }
+        catch (IdentityException ex)
+        {
+            return BadRequest(new { Error = ex.Message });
+        }
+        catch
+        {
+            return StatusCode(500, new { Error = "Внутренняя ошибка сервера" });
+        }
+    }
+
+    [HttpPost("refresh")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
+    {
+        try
+        {
+            if (!await refreshTokenService.ValidateTokenAsync(request.RefreshToken))
+            {
+                return Unauthorized(new { Error = "Недействительный refresh token" });
+            }
+
+            var oldToken = await refreshTokenService.GetByTokenAsync(request.RefreshToken);
+            if (oldToken == null)
+            {
+                return Unauthorized(new { Error = "Недействительный refresh token" });
+            }
+
+            var userId = oldToken.UserId;
+
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.NameIdentifier, userId.ToString()),
+            };
+
+            var accessToken = tokenService.GenerateAccessToken(claims);
+            var newRefreshToken = (await refreshTokenService.CreateAsync(userId)).Token;
+
+            await refreshTokenService.RevokeTokenAsync(request.RefreshToken, newRefreshToken);
+
+            return Ok(new LoginResponseDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = newRefreshToken,
             });
         }
         catch (IdentityException ex)

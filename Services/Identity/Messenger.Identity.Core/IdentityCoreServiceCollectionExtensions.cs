@@ -26,6 +26,7 @@ public static class IdentityCoreServiceCollectionExtensions
         services.AddSingleton(connectionString);
         services.AddSingleton<ITimeProvider, SystemTimeProvider>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<ITokenService, TokenService>();
         return services;
     }
