@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using Dapper;
-using Messenger.Identity.Core.Models;
+using Messenger.Identity.Core.Entities;
 using Microsoft.Extensions.Options;
 using Npgsql;
 

@@ -1,4 +1,4 @@
-namespace Messenger.Identity.Core.Models;
+namespace Messenger.Identity.Core.Entities;
 
 public sealed class RefreshToken
 {

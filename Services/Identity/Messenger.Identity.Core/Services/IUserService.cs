@@ -1,4 +1,4 @@
-using Messenger.Identity.Core.Models;
+using Messenger.Identity.Core.Entities;
 
 namespace Messenger.Identity.Core.Services;
 

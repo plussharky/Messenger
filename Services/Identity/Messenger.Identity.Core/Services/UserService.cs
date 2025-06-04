@@ -1,6 +1,6 @@
 using Dapper;
+using Messenger.Identity.Core.Entities;
 using Messenger.Identity.Core.Exceptions;
-using Messenger.Identity.Core.Models;
 using Npgsql;
 
 namespace Messenger.Identity.Core.Services;

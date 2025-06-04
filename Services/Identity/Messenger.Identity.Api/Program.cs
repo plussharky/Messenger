@@ -2,6 +2,7 @@ using System.Text;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,12 +17,7 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddIdentityCoreServices(connectionString);
-
-// Configure JWT
-builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
-var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()
-    ?? throw new InvalidOperationException("JWT configuration not found.");
+builder.Services.AddIdentityCoreServices(connectionString, builder.Configuration.GetSection("Jwt"));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -30,15 +26,17 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    var sp = builder.Services.BuildServiceProvider();
+    var jwtOptions = sp.GetRequiredService<IOptions<JwtOptions>>();
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtOptions.Issuer,
-        ValidAudience = jwtOptions.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey)),
+        ValidIssuer = jwtOptions.Value.Issuer,
+        ValidAudience = jwtOptions.Value.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SecretKey)),
     };
 });
 
