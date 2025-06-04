@@ -1,25 +1,24 @@
-using Messenger.Messages.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Messenger.Messages.Infrastructure.Services;
+namespace Messenger.Identity.Core.Services;
 
-internal sealed class MigrationHostedService(
-        IServiceProvider serviceProvider,
-        ILogger<MigrationHostedService> logger)
+internal sealed class DatabaseMigrationService(
+    IServiceProvider serviceProvider,
+    ILogger<DatabaseMigrationService> logger)
     : IHostedService
 {
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         try
         {
             using var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<MessageContext>();
+            var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
 
             logger.LogInformation("Starting database migration...");
-            await context.Database.MigrateAsync(cancellationToken);
+            runner.MigrateUp();
             logger.LogInformation("Database migration completed successfully");
         }
         catch (Exception ex)
@@ -27,6 +26,8 @@ internal sealed class MigrationHostedService(
             logger.LogError(ex, "An error occurred while migrating the database");
             throw;
         }
+
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
