@@ -1,5 +1,5 @@
 using System.Globalization;
-using Messenger.Messages.Application.Services;
+using Messenger.Common.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace Messenger.Messages.ComponentTests;

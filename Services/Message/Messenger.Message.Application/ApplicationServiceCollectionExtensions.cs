@@ -1,3 +1,4 @@
+using Messenger.Common.Services;
 using Messenger.Messages.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 

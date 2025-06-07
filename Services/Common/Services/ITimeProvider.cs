@@ -1,4 +1,4 @@
-namespace Messenger.Identity.Core.Services;
+namespace Messenger.Common.Services;
 
 public interface ITimeProvider
 {

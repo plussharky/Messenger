@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using Messenger.Common.Services;
 using Messenger.Identity.Core.Entities;
 using Messenger.Identity.Core.Repositories;
 using Microsoft.Extensions.Options;

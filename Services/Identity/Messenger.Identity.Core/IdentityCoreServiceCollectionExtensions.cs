@@ -1,6 +1,7 @@
 using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
+using Messenger.Common.Services;
 using Messenger.Identity.Core.BusinessLogic;
 using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repositories;

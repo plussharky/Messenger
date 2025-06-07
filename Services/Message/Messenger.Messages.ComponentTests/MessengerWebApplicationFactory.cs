@@ -1,4 +1,4 @@
-using Messenger.Messages.Application.Services;
+using Messenger.Common.Services;
 using Messenger.Messages.Infrastructure.Data;
 using Messenger.Messages.Infrastructure.Services;
 using Microsoft.AspNetCore.Hosting;

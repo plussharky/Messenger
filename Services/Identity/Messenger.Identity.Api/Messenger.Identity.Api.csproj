@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Messenger.Identity.Core\Messenger.Identity.Core.csproj" />
   </ItemGroup>
 
