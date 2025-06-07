@@ -1,5 +1,6 @@
 using System.Text;
 using Messenger.Identity.Core;
+using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -17,7 +18,10 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddIdentityCoreServices(connectionString, options =>
+builder.Services.AddIdentityCoreServices(new ConnectionString
+{
+    Value = connectionString,
+}, options =>
 {
     builder.Configuration.GetSection("Jwt").Bind(options);
 });

@@ -2,6 +2,7 @@ using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
 using Messenger.Identity.Core.BusinessLogic;
+using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repositories;
 using Messenger.Identity.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,7 @@ namespace Messenger.Identity.Core;
 public static class IdentityCoreServiceCollectionExtensions
 {
     public static IServiceCollection AddIdentityCoreServices(
-        this IServiceCollection services, string connectionString, Action<JwtOptions> configureJwt)
+        this IServiceCollection services, ConnectionString connectionString, Action<JwtOptions> configureJwt)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -19,7 +20,7 @@ public static class IdentityCoreServiceCollectionExtensions
             .AddFluentMigratorCore()
             .ConfigureRunner(rb => rb
                 .AddPostgres()
-                .WithGlobalConnectionString(connectionString)
+                .WithGlobalConnectionString(connectionString.Value)
                 .WithGlobalCommandTimeout(TimeSpan.FromMinutes(5))
                 .ScanIn(typeof(DatabaseMigrationService).Assembly).For.Migrations())
             .AddLogging(lb => lb.AddFluentMigratorConsole())

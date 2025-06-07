@@ -1,15 +1,16 @@
 using Dapper;
 using Messenger.Identity.Core.Entities;
+using Messenger.Identity.Core.Options;
 using Npgsql;
 
 namespace Messenger.Identity.Core.Repositories;
 
-internal sealed class UserRepository(string connectionString)
+internal sealed class UserRepository(ConnectionString connectionString)
     : IUserRepository
 {
     public async Task<bool> IsEmailExistsAsync(string email)
     {
-        using var connection = new NpgsqlConnection(connectionString);
+        using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();
         return await connection.ExecuteScalarAsync<bool>(
             "SELECT EXISTS(SELECT 1 FROM user_credentials WHERE email = @Email)",
@@ -21,7 +22,7 @@ internal sealed class UserRepository(string connectionString)
 
     public async Task<Guid> CreateUserAsync(string email, string passwordHash, string salt, DateTimeOffset createdAt)
     {
-        using var connection = new NpgsqlConnection(connectionString);
+        using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();
         using var transaction = await connection.BeginTransactionAsync();
         try
@@ -57,7 +58,7 @@ internal sealed class UserRepository(string connectionString)
 
     public async Task<UserCredentials?> GetUserCredentialsByEmailAsync(string email)
     {
-        using var connection = new NpgsqlConnection(connectionString);
+        using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();
         return await connection.QueryFirstOrDefaultAsync<UserCredentials>(
             "SELECT user_id, email, password_hash, salt FROM user_credentials WHERE email = @Email",
@@ -69,7 +70,7 @@ internal sealed class UserRepository(string connectionString)
 
     public async Task<User?> GetUserByIdAsync(Guid userId)
     {
-        using var connection = new NpgsqlConnection(connectionString);
+        using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();
         return await connection.QueryFirstOrDefaultAsync<User>(
             "SELECT id, created_at FROM users WHERE id = @Id",
