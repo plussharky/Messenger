@@ -24,7 +24,10 @@ internal sealed class RefreshTokenRepository(string connectionString)
         return await connection.QueryFirstOrDefaultAsync<RefreshToken>(
             "SELECT id, user_id, token, expires_at, created_at, is_revoked, revoked_at, replaced_by_token " +
             "FROM public.refresh_tokens WHERE token = @Token",
-            new { Token = token });
+            new
+            {
+                Token = token,
+            });
     }
 
     public async Task RevokeTokenAsync(string token, DateTime revokedAt, string? replacedByToken = null)

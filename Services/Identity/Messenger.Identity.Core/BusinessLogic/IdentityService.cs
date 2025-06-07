@@ -35,7 +35,10 @@ internal sealed class IdentityService(
             throw new InvalidCredentialsException();
         }
 
-        var claims = new List<Claim> { new (ClaimTypes.NameIdentifier, user.Id.ToString()) };
+        var claims = new List<Claim>
+        {
+            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+        };
         var accessToken = tokenService.GenerateAccessToken(claims);
         var refreshToken = (await refreshTokenService.CreateAsync(user.Id)).Token;
         return new LoginResponse
@@ -59,7 +62,10 @@ internal sealed class IdentityService(
         }
 
         var userId = oldToken.UserId;
-        var claims = new List<Claim> { new (ClaimTypes.NameIdentifier, userId.ToString()) };
+        var claims = new List<Claim>
+        {
+            new (ClaimTypes.NameIdentifier, userId.ToString()),
+        };
         var accessToken = tokenService.GenerateAccessToken(claims);
         var newRefreshToken = (await refreshTokenService.CreateAsync(userId)).Token;
         await refreshTokenService.RevokeTokenAsync(refreshToken, newRefreshToken);

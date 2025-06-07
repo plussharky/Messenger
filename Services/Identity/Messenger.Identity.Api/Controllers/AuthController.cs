@@ -20,11 +20,17 @@ public sealed class AuthController(
         try
         {
             var userId = await identityService.RegisterUserAsync(request.Email, request.Password);
-            return Ok(new { UserId = userId });
+            return Ok(new
+            {
+                UserId = userId,
+            });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { Error = ex.Message });
+            return BadRequest(new
+            {
+                Error = ex.Message,
+            });
         }
     }
 
@@ -40,11 +46,17 @@ public sealed class AuthController(
         }
         catch (InvalidCredentialsException ex)
         {
-            return Unauthorized(new { Error = ex.Message });
+            return Unauthorized(new
+            {
+                Error = ex.Message,
+            });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { Error = ex.Message });
+            return BadRequest(new
+            {
+                Error = ex.Message,
+            });
         }
     }
 
@@ -60,11 +72,17 @@ public sealed class AuthController(
         }
         catch (InvalidRefreshTokenException ex)
         {
-            return Unauthorized(new { Error = ex.Message });
+            return Unauthorized(new
+            {
+                Error = ex.Message,
+            });
         }
         catch (Exception ex)
         {
-            return BadRequest(new { Error = ex.Message });
+            return BadRequest(new
+            {
+                Error = ex.Message,
+            });
         }
     }
 }

@@ -13,7 +13,10 @@ internal sealed class UserRepository(string connectionString)
         await connection.OpenAsync();
         return await connection.ExecuteScalarAsync<bool>(
             "SELECT EXISTS(SELECT 1 FROM user_credentials WHERE email = @Email)",
-            new { Email = email });
+            new
+            {
+                Email = email,
+            });
     }
 
     public async Task<Guid> CreateUserAsync(string email, string passwordHash, string salt, DateTimeOffset createdAt)
@@ -26,11 +29,21 @@ internal sealed class UserRepository(string connectionString)
             var userId = Guid.NewGuid();
             await connection.ExecuteAsync(
                 "INSERT INTO users (id, created_at) VALUES (@Id, @CreatedAt)",
-                new { Id = userId, CreatedAt = createdAt },
+                new
+                {
+                    Id = userId,
+                    CreatedAt = createdAt,
+                },
                 transaction);
             await connection.ExecuteAsync(
                 "INSERT INTO user_credentials (user_id, email, password_hash, salt) VALUES (@UserId, @Email, @PasswordHash, @Salt)",
-                new { UserId = userId, Email = email, PasswordHash = passwordHash, Salt = salt },
+                new
+                {
+                    UserId = userId,
+                    Email = email,
+                    PasswordHash = passwordHash,
+                    Salt = salt,
+                },
                 transaction);
             await transaction.CommitAsync();
             return userId;
@@ -48,7 +61,10 @@ internal sealed class UserRepository(string connectionString)
         await connection.OpenAsync();
         return await connection.QueryFirstOrDefaultAsync<UserCredentials>(
             "SELECT user_id, email, password_hash, salt FROM user_credentials WHERE email = @Email",
-            new { Email = email });
+            new
+            {
+                Email = email,
+            });
     }
 
     public async Task<User?> GetUserByIdAsync(Guid userId)
@@ -57,6 +73,9 @@ internal sealed class UserRepository(string connectionString)
         await connection.OpenAsync();
         return await connection.QueryFirstOrDefaultAsync<User>(
             "SELECT id, created_at FROM users WHERE id = @Id",
-            new { Id = userId });
+            new
+            {
+                Id = userId,
+            });
     }
 }
