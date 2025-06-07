@@ -2,6 +2,7 @@ using System.Globalization;
 using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
+using Messenger.Identity.Core.Repositories;
 using Messenger.Identity.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,8 @@ public static class IdentityCoreServiceCollectionExtensions
 
         services.AddHostedService<DatabaseMigrationService>();
         services.AddSingleton(connectionString);
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddSingleton<ITimeProvider, SystemTimeProvider>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();

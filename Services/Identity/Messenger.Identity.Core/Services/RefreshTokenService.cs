@@ -1,13 +1,12 @@
 using System.Security.Cryptography;
-using Dapper;
 using Messenger.Identity.Core.Entities;
+using Messenger.Identity.Core.Repositories;
 using Microsoft.Extensions.Options;
-using Npgsql;
 
 namespace Messenger.Identity.Core.Services;
 
 internal sealed class RefreshTokenService(
-    string connectionString,
+    IRefreshTokenRepository refreshTokenRepository,
     ITimeProvider timeProvider,
     IOptions<JwtOptions> jwtOptions)
     : IRefreshTokenService
@@ -27,59 +26,22 @@ internal sealed class RefreshTokenService(
             CreatedAt = timeProvider.GetCurrentTime().UtcDateTime,
             IsRevoked = false,
         };
-
-        using var connection = new NpgsqlConnection(connectionString);
-        await connection.OpenAsync();
-        await connection.ExecuteAsync(
-            "INSERT INTO public.refresh_tokens (id, user_id, token, expires_at, created_at, is_revoked) " +
-            "VALUES (@Id, @UserId, @Token, @ExpiresAt, @CreatedAt, @IsRevoked)",
-            refreshToken);
-
+        await refreshTokenRepository.CreateAsync(refreshToken);
         return refreshToken;
     }
 
-    public async Task<RefreshToken?> GetByTokenAsync(string token)
-    {
-        using var connection = new NpgsqlConnection(connectionString);
-        await connection.OpenAsync();
-        return await connection.QueryFirstOrDefaultAsync<RefreshToken>(
-            "SELECT id, user_id, token, expires_at, created_at, is_revoked, revoked_at, replaced_by_token " +
-            "FROM public.refresh_tokens WHERE token = @Token",
-            new { Token = token });
-    }
+    public async Task<RefreshToken?> GetByTokenAsync(string token) =>
+        await refreshTokenRepository.GetByTokenAsync(token);
 
-    public async Task RevokeTokenAsync(string token, string? replacedByToken = null)
-    {
-        using var connection = new NpgsqlConnection(connectionString);
-        await connection.OpenAsync();
-        await connection.ExecuteAsync(
-            "UPDATE public.refresh_tokens SET is_revoked = TRUE, revoked_at = @RevokedAt, replaced_by_token = @ReplacedByToken " +
-            "WHERE token = @Token",
-            new
-            {
-                Token = token,
-                RevokedAt = timeProvider.GetCurrentTime().UtcDateTime,
-                ReplacedByToken = replacedByToken,
-            });
-    }
+    public async Task RevokeTokenAsync(string token, string? replacedByToken = null) =>
+        await refreshTokenRepository.RevokeTokenAsync(token, timeProvider.GetCurrentTime().UtcDateTime, replacedByToken);
 
-    public async Task RevokeAllUserTokensAsync(Guid userId)
-    {
-        using var connection = new NpgsqlConnection(connectionString);
-        await connection.OpenAsync();
-        await connection.ExecuteAsync(
-            "UPDATE public.refresh_tokens SET is_revoked = TRUE, revoked_at = @RevokedAt " +
-            "WHERE user_id = @UserId AND is_revoked = FALSE",
-            new
-            {
-                UserId = userId,
-                RevokedAt = timeProvider.GetCurrentTime().UtcDateTime,
-            });
-    }
+    public async Task RevokeAllUserTokensAsync(Guid userId) =>
+        await refreshTokenRepository.RevokeAllUserTokensAsync(userId, timeProvider.GetCurrentTime().UtcDateTime);
 
     public async Task<bool> ValidateTokenAsync(string token)
     {
-        var refreshToken = await GetByTokenAsync(token);
+        var refreshToken = await refreshTokenRepository.GetByTokenAsync(token);
         if (refreshToken == null)
         {
             return false;

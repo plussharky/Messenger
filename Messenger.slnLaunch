@@ -9,6 +9,10 @@
       {
         "Path": "Services\\Message\\Messenger.Message.API\\Messenger.Messages.Api.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "docker-compose.dcproj",
+        "Action": "Start"
       }
     ]
   }
