@@ -2,6 +2,7 @@ using System.Globalization;
 using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
+using Messenger.Identity.Core.BusinessLogic;
 using Messenger.Identity.Core.Repositories;
 using Messenger.Identity.Core.Services;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +35,7 @@ public static class IdentityCoreServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IIdentityService, IdentityService>();
         services.Configure<JwtOptions>(options =>
         {
             options.SecretKey = jwtSection["SecretKey"] ?? string.Empty;

@@ -1,7 +1,7 @@
-using System.Security.Claims;
+using AutoMapper;
 using Messenger.Identity.Api.DTOs;
+using Messenger.Identity.Core.BusinessLogic;
 using Messenger.Identity.Core.Exceptions;
-using Messenger.Identity.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +10,8 @@ namespace Messenger.Identity.Api.Controllers;
 [ApiController]
 [Route("api/auth")]
 public sealed class AuthController(
-    IUserService userService,
-    ITokenService tokenService,
-    IRefreshTokenService refreshTokenService)
+    IIdentityService identityService,
+    IMapper mapper)
     : ControllerBase
 {
     [HttpPost("register")]
@@ -20,20 +19,12 @@ public sealed class AuthController(
     {
         try
         {
-            var userId = await userService.RegisterUserAsync(request.Email, request.Password);
+            var userId = await identityService.RegisterUserAsync(request.Email, request.Password);
             return Ok(new { UserId = userId });
         }
-        catch (EmailAlreadyExistsException ex)
-        {
-            return Conflict(new { Error = ex.Message });
-        }
-        catch (IdentityException ex)
+        catch (Exception ex)
         {
             return BadRequest(new { Error = ex.Message });
-        }
-        catch
-        {
-            return StatusCode(500, new { Error = "Внутренняя ошибка сервера" });
         }
     }
 
@@ -43,33 +34,17 @@ public sealed class AuthController(
     {
         try
         {
-            var user = await userService.AuthenticateUserAsync(request.Email, request.Password);
-            if (user == null)
-            {
-                return Unauthorized(new { Error = "Неверный email или пароль" });
-            }
-
-            var claims = new List<Claim>
-            {
-                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
-            };
-
-            var accessToken = tokenService.GenerateAccessToken(claims);
-            var refreshToken = (await refreshTokenService.CreateAsync(user.Id)).Token;
-
-            return Ok(new LoginResponseDto
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken,
-            });
+            var result = await identityService.LoginAsync(request.Email, request.Password);
+            var dto = mapper.Map<LoginResponseDto>(result);
+            return Ok(dto);
         }
-        catch (IdentityException ex)
+        catch (InvalidCredentialsException ex)
+        {
+            return Unauthorized(new { Error = ex.Message });
+        }
+        catch (Exception ex)
         {
             return BadRequest(new { Error = ex.Message });
-        }
-        catch
-        {
-            return StatusCode(500, new { Error = "Внутренняя ошибка сервера" });
         }
     }
 
@@ -79,42 +54,17 @@ public sealed class AuthController(
     {
         try
         {
-            if (!await refreshTokenService.ValidateTokenAsync(request.RefreshToken))
-            {
-                return Unauthorized(new { Error = "Недействительный refresh token" });
-            }
-
-            var oldToken = await refreshTokenService.GetByTokenAsync(request.RefreshToken);
-            if (oldToken == null)
-            {
-                return Unauthorized(new { Error = "Недействительный refresh token" });
-            }
-
-            var userId = oldToken.UserId;
-
-            var claims = new List<Claim>
-            {
-                new (ClaimTypes.NameIdentifier, userId.ToString()),
-            };
-
-            var accessToken = tokenService.GenerateAccessToken(claims);
-            var newRefreshToken = (await refreshTokenService.CreateAsync(userId)).Token;
-
-            await refreshTokenService.RevokeTokenAsync(request.RefreshToken, newRefreshToken);
-
-            return Ok(new LoginResponseDto
-            {
-                AccessToken = accessToken,
-                RefreshToken = newRefreshToken,
-            });
+            var result = await identityService.RefreshTokenAsync(request.RefreshToken);
+            var dto = mapper.Map<LoginResponseDto>(result);
+            return Ok(dto);
         }
-        catch (IdentityException ex)
+        catch (InvalidRefreshTokenException ex)
+        {
+            return Unauthorized(new { Error = ex.Message });
+        }
+        catch (Exception ex)
         {
             return BadRequest(new { Error = ex.Message });
-        }
-        catch
-        {
-            return StatusCode(500, new { Error = "Внутренняя ошибка сервера" });
         }
     }
 }
