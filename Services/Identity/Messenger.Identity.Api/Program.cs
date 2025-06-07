@@ -17,7 +17,10 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddIdentityCoreServices(connectionString, builder.Configuration.GetSection("Jwt"));
+builder.Services.AddIdentityCoreServices(connectionString, options =>
+{
+    builder.Configuration.GetSection("Jwt").Bind(options);
+});
 builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfile).Assembly);
 
 builder.Services.AddAuthentication(options =>

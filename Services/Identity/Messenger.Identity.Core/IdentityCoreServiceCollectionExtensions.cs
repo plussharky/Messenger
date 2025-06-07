@@ -1,11 +1,9 @@
-using System.Globalization;
 using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
 using Messenger.Identity.Core.BusinessLogic;
 using Messenger.Identity.Core.Repositories;
 using Messenger.Identity.Core.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Identity.Core;
@@ -13,7 +11,7 @@ namespace Messenger.Identity.Core;
 public static class IdentityCoreServiceCollectionExtensions
 {
     public static IServiceCollection AddIdentityCoreServices(
-        this IServiceCollection services, string connectionString, IConfigurationSection jwtSection)
+        this IServiceCollection services, string connectionString, Action<JwtOptions> configureJwt)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -36,14 +34,7 @@ public static class IdentityCoreServiceCollectionExtensions
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IIdentityService, IdentityService>();
-        services.Configure<JwtOptions>(options =>
-        {
-            options.SecretKey = jwtSection["SecretKey"] ?? string.Empty;
-            options.Issuer = jwtSection["Issuer"] ?? string.Empty;
-            options.Audience = jwtSection["Audience"] ?? string.Empty;
-            options.AccessTokenExpirationMinutes = int.TryParse(jwtSection["AccessTokenExpirationMinutes"], CultureInfo.InvariantCulture, out var access) ? access : 60;
-            options.RefreshTokenExpirationDays = int.TryParse(jwtSection["RefreshTokenExpirationDays"], CultureInfo.InvariantCulture, out var refresh) ? refresh : 7;
-        });
+        services.Configure(configureJwt);
         return services;
     }
 }
