@@ -15,74 +15,31 @@ public sealed class AuthController(
     : ControllerBase
 {
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
     {
-        try
+        var userId = await identityService.RegisterUserAsync(request.Email, request.Password);
+        return Ok(new
         {
-            var userId = await identityService.RegisterUserAsync(request.Email, request.Password);
-            return Ok(new
-            {
-                UserId = userId,
-            });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new
-            {
-                Error = ex.Message,
-            });
-        }
+            UserId = userId,
+        });
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
-        try
-        {
-            var result = await identityService.LoginAsync(request.Email, request.Password);
-            var dto = mapper.Map<LoginResponseDto>(result);
-            return Ok(dto);
-        }
-        catch (InvalidCredentialsException ex)
-        {
-            return Unauthorized(new
-            {
-                Error = ex.Message,
-            });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new
-            {
-                Error = ex.Message,
-            });
-        }
+        var result = await identityService.LoginAsync(request.Email, request.Password);
+        var dto = mapper.Map<LoginResponseDto>(result);
+        return Ok(dto);
     }
 
     [HttpPost("refresh")]
     [AllowAnonymous]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
     {
-        try
-        {
-            var result = await identityService.RefreshTokenAsync(request.RefreshToken);
-            var dto = mapper.Map<LoginResponseDto>(result);
-            return Ok(dto);
-        }
-        catch (InvalidRefreshTokenException ex)
-        {
-            return Unauthorized(new
-            {
-                Error = ex.Message,
-            });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new
-            {
-                Error = ex.Message,
-            });
-        }
+        var result = await identityService.RefreshTokenAsync(request.RefreshToken);
+        var dto = mapper.Map<LoginResponseDto>(result);
+        return Ok(dto);
     }
 }
