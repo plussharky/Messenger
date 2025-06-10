@@ -33,13 +33,7 @@ internal sealed class IdentityService(
             throw new InvalidCredentialsException();
         }
 
-        var accessToken = tokenService.GenerateAccessToken(user.Id);
-        var refreshToken = await refreshTokenService.CreateAsync(user.Id);
-        return new LoginResponse
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken.Token,
-        };
+        return await GenerateTokensAsync(user.Id);
     }
 
     public async Task<LoginResponse> RefreshTokenAsync(string refreshToken)
@@ -50,13 +44,19 @@ internal sealed class IdentityService(
             throw new InvalidRefreshTokenException();
         }
 
-        var accessToken = tokenService.GenerateAccessToken(oldToken.UserId);
-        var newRefreshToken = await refreshTokenService.CreateAsync(oldToken.UserId);
-        await refreshTokenService.RevokeTokenAsync(refreshToken, newRefreshToken.Token);
+        var response = await GenerateTokensAsync(oldToken.UserId);
+        await refreshTokenService.RevokeTokenAsync(refreshToken, response.RefreshToken);
+        return response;
+    }
+
+    private async Task<LoginResponse> GenerateTokensAsync(Guid userId)
+    {
+        var accessToken = tokenService.GenerateAccessToken(userId);
+        var refreshToken = await refreshTokenService.CreateAsync(userId);
         return new LoginResponse
         {
             AccessToken = accessToken,
-            RefreshToken = newRefreshToken.Token,
+            RefreshToken = refreshToken.Token,
         };
     }
 }
