@@ -41,25 +41,25 @@ internal sealed class RefreshTokenService(
     public async Task RevokeAllUserTokensAsync(Guid userId) =>
         await refreshTokenRepository.RevokeAllUserTokensAsync(userId, timeProvider.GetCurrentTime().UtcDateTime);
 
-    public async Task<bool> ValidateTokenAsync(string token)
+    public async Task<RefreshToken?> ValidateAndGetTokenAsync(string token)
     {
         var refreshToken = await refreshTokenRepository.GetByTokenAsync(token);
         if (refreshToken == null)
         {
-            return false;
+            return null;
         }
 
         if (refreshToken.IsRevoked)
         {
-            return false;
+            return null;
         }
 
         if (refreshToken.ExpiresAt < timeProvider.GetCurrentTime().UtcDateTime)
         {
-            return false;
+            return null;
         }
 
-        return true;
+        return refreshToken;
     }
 
     private static string GenerateToken()

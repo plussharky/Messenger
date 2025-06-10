@@ -49,12 +49,7 @@ internal sealed class IdentityService(
 
     public async Task<LoginResponse> RefreshTokenAsync(string refreshToken)
     {
-        if (!await refreshTokenService.ValidateTokenAsync(refreshToken))
-        {
-            throw new InvalidRefreshTokenException();
-        }
-
-        var oldToken = await refreshTokenService.GetByTokenAsync(refreshToken);
+        var oldToken = await refreshTokenService.ValidateAndGetTokenAsync(refreshToken);
         if (oldToken == null)
         {
             throw new InvalidRefreshTokenException();

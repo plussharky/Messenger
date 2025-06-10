@@ -12,5 +12,5 @@ public interface IRefreshTokenService
 
     Task RevokeAllUserTokensAsync(Guid userId);
 
-    Task<bool> ValidateTokenAsync(string token);
+    Task<RefreshToken?> ValidateAndGetTokenAsync(string token);
 }
