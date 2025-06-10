@@ -39,11 +39,11 @@ internal sealed class IdentityService(
             new (ClaimTypes.NameIdentifier, user.Id.ToString()),
         };
         var accessToken = tokenService.GenerateAccessToken(claims);
-        var refreshToken = (await refreshTokenService.CreateAsync(user.Id)).Token;
+        var refreshToken = await refreshTokenService.CreateAsync(user.Id);
         return new LoginResponse
         {
             AccessToken = accessToken,
-            RefreshToken = refreshToken,
+            RefreshToken = refreshToken.Token,
         };
     }
 
