@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Messenger.Identity.Core.Exceptions;
 using Messenger.Identity.Core.Models;
 
@@ -34,11 +33,7 @@ internal sealed class IdentityService(
             throw new InvalidCredentialsException();
         }
 
-        var claims = new List<Claim>
-        {
-            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
-        };
-        var accessToken = tokenService.GenerateAccessToken(claims);
+        var accessToken = tokenService.GenerateAccessToken(user.Id);
         var refreshToken = await refreshTokenService.CreateAsync(user.Id);
         return new LoginResponse
         {
@@ -55,18 +50,13 @@ internal sealed class IdentityService(
             throw new InvalidRefreshTokenException();
         }
 
-        var userId = oldToken.UserId;
-        var claims = new List<Claim>
-        {
-            new (ClaimTypes.NameIdentifier, userId.ToString()),
-        };
-        var accessToken = tokenService.GenerateAccessToken(claims);
-        var newRefreshToken = (await refreshTokenService.CreateAsync(userId)).Token;
-        await refreshTokenService.RevokeTokenAsync(refreshToken, newRefreshToken);
+        var accessToken = tokenService.GenerateAccessToken(oldToken.UserId);
+        var newRefreshToken = await refreshTokenService.CreateAsync(oldToken.UserId);
+        await refreshTokenService.RevokeTokenAsync(refreshToken, newRefreshToken.Token);
         return new LoginResponse
         {
             AccessToken = accessToken,
-            RefreshToken = newRefreshToken,
+            RefreshToken = newRefreshToken.Token,
         };
     }
 }

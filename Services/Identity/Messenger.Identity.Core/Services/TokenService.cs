@@ -15,10 +15,14 @@ internal sealed class TokenService(
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
-    public string GenerateAccessToken(IEnumerable<Claim> claims)
+    public string GenerateAccessToken(Guid userId)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var claims = new List<Claim>
+        {
+            new (ClaimTypes.NameIdentifier, userId.ToString()),
+        };
 
         var token = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
