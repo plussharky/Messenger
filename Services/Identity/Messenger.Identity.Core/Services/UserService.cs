@@ -7,7 +7,8 @@ namespace Messenger.Identity.Core.Services;
 
 internal sealed class UserService(
     IUserRepository userRepository,
-    ITimeProvider timeProvider)
+    ITimeProvider timeProvider,
+    IPasswordHasher passwordHasher)
     : IUserService
 {
     public async Task<Guid> RegisterUserAsync(string email, string password)
@@ -17,10 +18,9 @@ internal sealed class UserService(
             throw new EmailAlreadyExistsException(email);
         }
 
-        var salt = BCrypt.Net.BCrypt.GenerateSalt();
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(password, salt);
+        var passwordHash = passwordHasher.HashPassword(password);
         var createdAt = timeProvider.GetCurrentTime();
-        return await userRepository.CreateUserAsync(email, passwordHash, salt, createdAt);
+        return await userRepository.CreateUserAsync(email, passwordHash, createdAt);
     }
 
     public async Task<User?> AuthenticateUserAsync(string email, string password)
@@ -31,7 +31,7 @@ internal sealed class UserService(
             return null;
         }
 
-        var isValidPassword = BCrypt.Net.BCrypt.Verify(password, credentials.PasswordHash);
+        var isValidPassword = passwordHasher.VerifyPassword(password, credentials.PasswordHash);
         if (!isValidPassword)
         {
             return null;

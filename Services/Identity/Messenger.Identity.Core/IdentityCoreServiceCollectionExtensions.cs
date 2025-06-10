@@ -32,6 +32,7 @@ public static class IdentityCoreServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddSingleton<ITimeProvider, SystemTimeProvider>();
+        services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<ITokenService, TokenService>();

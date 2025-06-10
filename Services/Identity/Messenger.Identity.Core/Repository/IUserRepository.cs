@@ -6,7 +6,7 @@ public interface IUserRepository
 {
     Task<bool> IsEmailExistsAsync(string email);
 
-    Task<Guid> CreateUserAsync(string email, string passwordHash, string salt, DateTimeOffset createdAt);
+    Task<Guid> CreateUserAsync(string email, string passwordHash, DateTimeOffset createdAt);
 
     Task<UserCredentials?> GetUserCredentialsByEmailAsync(string email);
 

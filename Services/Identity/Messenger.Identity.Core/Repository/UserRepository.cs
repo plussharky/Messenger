@@ -20,7 +20,7 @@ internal sealed class UserRepository(ConnectionString connectionString)
             });
     }
 
-    public async Task<Guid> CreateUserAsync(string email, string passwordHash, string salt, DateTimeOffset createdAt)
+    public async Task<Guid> CreateUserAsync(string email, string passwordHash, DateTimeOffset createdAt)
     {
         using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();
@@ -37,13 +37,12 @@ internal sealed class UserRepository(ConnectionString connectionString)
                 },
                 transaction);
             await connection.ExecuteAsync(
-                "INSERT INTO user_credentials (user_id, email, password_hash, salt) VALUES (@UserId, @Email, @PasswordHash, @Salt)",
+                "INSERT INTO user_credentials (user_id, email, password_hash) VALUES (@UserId, @Email, @PasswordHash)",
                 new
                 {
                     UserId = userId,
                     Email = email,
                     PasswordHash = passwordHash,
-                    Salt = salt,
                 },
                 transaction);
             await transaction.CommitAsync();
@@ -61,7 +60,7 @@ internal sealed class UserRepository(ConnectionString connectionString)
         using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();
         return await connection.QueryFirstOrDefaultAsync<UserCredentials>(
-            "SELECT user_id, email, password_hash, salt FROM user_credentials WHERE email = @Email",
+            "SELECT user_id, email, password_hash FROM user_credentials WHERE email = @Email",
             new
             {
                 Email = email,
