@@ -15,7 +15,15 @@ internal sealed class RefreshTokenRepository(ConnectionString connectionString)
         await connection.ExecuteAsync(
             "INSERT INTO public.refresh_tokens (id, user_id, token, expires_at, created_at, is_revoked) " +
             "VALUES (@Id, @UserId, @Token, @ExpiresAt, @CreatedAt, @IsRevoked)",
-            refreshToken);
+            new
+            {
+                Id = refreshToken.Id,
+                UserId = refreshToken.UserId,
+                Token = refreshToken.Token,
+                ExpiresAt = refreshToken.ExpiresAt,
+                CreatedAt = refreshToken.CreatedAt,
+                IsRevoked = refreshToken.IsRevoked,
+            });
     }
 
     public async Task<RefreshToken?> GetByTokenAsync(string token)
