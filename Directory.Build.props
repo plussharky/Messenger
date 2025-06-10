@@ -7,6 +7,10 @@
         <PackageReference Include="Roslynator.Analyzers" Version="4.13.1" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.13.1" PrivateAssets="all" />
     </ItemGroup>
+
+    <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Api'))">
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    </ItemGroup>
     
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
