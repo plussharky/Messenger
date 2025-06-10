@@ -5,13 +5,12 @@ using Npgsql;
 
 namespace Messenger.Identity.Core.Repository;
 
-internal sealed class RefreshTokenRepository(ConnectionString connectionString)
+internal sealed class RefreshTokenRepository(IDbConnectionFactory connectionFactory)
     : IRefreshTokenRepository
 {
     public async Task CreateAsync(RefreshToken refreshToken)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         await connection.ExecuteAsync(
             "INSERT INTO public.refresh_tokens (id, user_id, token, expires_at, created_at, is_revoked) " +
             "VALUES (@Id, @UserId, @Token, @ExpiresAt, @CreatedAt, @IsRevoked)",
@@ -28,8 +27,7 @@ internal sealed class RefreshTokenRepository(ConnectionString connectionString)
 
     public async Task<RefreshToken?> GetByTokenAsync(string token)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         return await connection.QueryFirstOrDefaultAsync<RefreshToken>(
             "SELECT id, user_id, token, expires_at, created_at, is_revoked, revoked_at, replaced_by_token " +
             "FROM public.refresh_tokens WHERE token = @Token",
@@ -41,8 +39,7 @@ internal sealed class RefreshTokenRepository(ConnectionString connectionString)
 
     public async Task RevokeTokenAsync(string token, DateTimeOffset revokedAt, string? replacedByToken = null)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         await connection.ExecuteAsync(
             "UPDATE public.refresh_tokens SET is_revoked = TRUE, revoked_at = @RevokedAt, replaced_by_token = @ReplacedByToken " +
             "WHERE token = @Token",
@@ -56,8 +53,7 @@ internal sealed class RefreshTokenRepository(ConnectionString connectionString)
 
     public async Task RevokeAllUserTokensAsync(Guid userId, DateTimeOffset revokedAt)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         await connection.ExecuteAsync(
             "UPDATE public.refresh_tokens SET is_revoked = TRUE, revoked_at = @RevokedAt " +
             "WHERE user_id = @UserId AND is_revoked = FALSE",

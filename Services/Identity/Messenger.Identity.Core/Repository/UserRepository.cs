@@ -1,17 +1,15 @@
 using Dapper;
-using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repository.Entities;
 using Npgsql;
 
 namespace Messenger.Identity.Core.Repository;
 
-internal sealed class UserRepository(ConnectionString connectionString)
+internal sealed class UserRepository(IDbConnectionFactory connectionFactory)
     : IUserRepository
 {
     public async Task<bool> IsEmailExistsAsync(string email)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         return await connection.ExecuteScalarAsync<bool>(
             "SELECT EXISTS(SELECT 1 FROM user_credentials WHERE email = @Email)",
             new
@@ -22,8 +20,7 @@ internal sealed class UserRepository(ConnectionString connectionString)
 
     public async Task<Guid> CreateUserAsync(string email, string passwordHash, DateTimeOffset createdAt)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         using var transaction = await connection.BeginTransactionAsync();
         try
         {
@@ -57,8 +54,7 @@ internal sealed class UserRepository(ConnectionString connectionString)
 
     public async Task<UserCredentials?> GetUserCredentialsByEmailAsync(string email)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         return await connection.QueryFirstOrDefaultAsync<UserCredentials>(
             "SELECT user_id, email, password_hash FROM user_credentials WHERE email = @Email",
             new
@@ -69,8 +65,7 @@ internal sealed class UserRepository(ConnectionString connectionString)
 
     public async Task<User?> GetUserByIdAsync(Guid userId)
     {
-        using var connection = new NpgsqlConnection(connectionString.Value);
-        await connection.OpenAsync();
+        await using var connection = await connectionFactory.OpenConnectionAsync();
         return await connection.QueryFirstOrDefaultAsync<User>(
             "SELECT id, created_at FROM users WHERE id = @Id",
             new

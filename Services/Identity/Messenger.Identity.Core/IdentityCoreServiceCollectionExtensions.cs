@@ -29,6 +29,7 @@ public static class IdentityCoreServiceCollectionExtensions
 
         services.AddHostedService<DatabaseMigrationService>();
         services.AddSingleton(connectionString);
+        services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddSingleton<ITimeProvider, SystemTimeProvider>();
