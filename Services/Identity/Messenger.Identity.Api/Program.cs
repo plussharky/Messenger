@@ -20,10 +20,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddIdentityCoreServices(new ConnectionString
 {
     Value = connectionString,
-}, options =>
-{
-    builder.Configuration.GetSection("Jwt").Bind(options);
-});
+}, builder.Configuration.GetSection("Jwt").Bind);
 builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfile).Assembly);
 
 builder.Services.AddAuthentication(options =>
