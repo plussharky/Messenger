@@ -1,6 +1,6 @@
 using FluentMigrator;
 
-namespace Messenger.Identity.Core.Database.Migrations;
+namespace Messenger.Identity.Core.Repository.Migrations;
 
 [Migration(20250604_003, TransactionBehavior.Default)]
 public sealed class CreateRefreshTokensTable : Migration

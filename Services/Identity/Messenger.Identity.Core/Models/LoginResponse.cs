@@ -1,4 +1,4 @@
-namespace Messenger.Identity.Core.BusinessLogic.Models;
+namespace Messenger.Identity.Core.Models;
 
 public sealed class LoginResponse
 {

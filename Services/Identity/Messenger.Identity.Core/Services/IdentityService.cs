@@ -1,9 +1,8 @@
 using System.Security.Claims;
-using Messenger.Identity.Core.BusinessLogic.Models;
 using Messenger.Identity.Core.Exceptions;
-using Messenger.Identity.Core.Services;
+using Messenger.Identity.Core.Models;
 
-namespace Messenger.Identity.Core.BusinessLogic;
+namespace Messenger.Identity.Core.Services;
 
 internal sealed class IdentityService(
     IUserService userService,

@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Messenger.Identity.Core.Services;
+namespace Messenger.Identity.Core.Repository;
 
 internal sealed class DatabaseMigrationService(
     IServiceProvider serviceProvider,

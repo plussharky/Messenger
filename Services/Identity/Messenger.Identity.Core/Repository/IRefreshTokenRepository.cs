@@ -1,6 +1,6 @@
-using Messenger.Identity.Core.Entities;
+using Messenger.Identity.Core.Repository.Entities;
 
-namespace Messenger.Identity.Core.Repositories;
+namespace Messenger.Identity.Core.Repository;
 
 public interface IRefreshTokenRepository
 {

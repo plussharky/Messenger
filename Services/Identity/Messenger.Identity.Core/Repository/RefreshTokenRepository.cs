@@ -1,9 +1,9 @@
 using Dapper;
-using Messenger.Identity.Core.Entities;
 using Messenger.Identity.Core.Options;
+using Messenger.Identity.Core.Repository.Entities;
 using Npgsql;
 
-namespace Messenger.Identity.Core.Repositories;
+namespace Messenger.Identity.Core.Repository;
 
 internal sealed class RefreshTokenRepository(ConnectionString connectionString)
     : IRefreshTokenRepository

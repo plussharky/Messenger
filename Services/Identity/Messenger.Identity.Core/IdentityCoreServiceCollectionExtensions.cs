@@ -2,9 +2,9 @@ using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
 using Messenger.Common.Services;
-using Messenger.Identity.Core.BusinessLogic;
 using Messenger.Identity.Core.Options;
-using Messenger.Identity.Core.Repositories;
+using Messenger.Identity.Core.Repository;
+using Messenger.Identity.Core.Repository.Migrations;
 using Messenger.Identity.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
 

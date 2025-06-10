@@ -1,6 +1,6 @@
 using FluentMigrator.Runner.VersionTableInfo;
 
-namespace Messenger.Identity.Core;
+namespace Messenger.Identity.Core.Repository.Migrations;
 
 internal sealed class CustomVersionTableMetaData : IVersionTableMetaData
 {

@@ -1,7 +1,7 @@
 using Messenger.Common.Services;
-using Messenger.Identity.Core.Entities;
 using Messenger.Identity.Core.Exceptions;
-using Messenger.Identity.Core.Repositories;
+using Messenger.Identity.Core.Repository;
+using Messenger.Identity.Core.Repository.Entities;
 
 namespace Messenger.Identity.Core.Services;
 

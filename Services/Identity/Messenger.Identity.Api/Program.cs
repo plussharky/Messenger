@@ -2,7 +2,6 @@ using System.Text;
 using Messenger.Identity.Api.Middleware;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Options;
-using Messenger.Identity.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
