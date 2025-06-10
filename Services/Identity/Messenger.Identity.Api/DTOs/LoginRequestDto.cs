@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Messenger.Identity.Api.DTOs;
+namespace Messenger.Identity.Api.Dtos;
 
 public sealed record LoginRequestDto
 {

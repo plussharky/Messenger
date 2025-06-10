@@ -1,4 +1,4 @@
-namespace Messenger.Identity.Api.DTOs;
+namespace Messenger.Identity.Api.Dtos;
 
 public sealed record RefreshTokenRequestDto
 {

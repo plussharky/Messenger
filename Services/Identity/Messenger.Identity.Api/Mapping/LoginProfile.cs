@@ -1,5 +1,5 @@
 using AutoMapper;
-using Messenger.Identity.Api.DTOs;
+using Messenger.Identity.Api.Dtos;
 using Messenger.Identity.Core.Models;
 
 namespace Messenger.Identity.Api.Mapping;

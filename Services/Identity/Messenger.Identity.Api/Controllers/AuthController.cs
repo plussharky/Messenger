@@ -1,5 +1,5 @@
 using AutoMapper;
-using Messenger.Identity.Api.DTOs;
+using Messenger.Identity.Api.Dtos;
 using Messenger.Identity.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
