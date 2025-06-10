@@ -1,6 +1,5 @@
 using Dapper;
 using Messenger.Identity.Core.Repository.Entities;
-using Npgsql;
 
 namespace Messenger.Identity.Core.Repository;
 

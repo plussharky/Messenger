@@ -12,4 +12,4 @@ internal sealed class DbConnectionFactory(ConnectionString connectionString)
         await connection.OpenAsync();
         return connection;
     }
-} 
+}
