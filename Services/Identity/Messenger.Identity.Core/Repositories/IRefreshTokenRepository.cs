@@ -8,7 +8,7 @@ public interface IRefreshTokenRepository
 
     Task<RefreshToken?> GetByTokenAsync(string token);
 
-    Task RevokeTokenAsync(string token, DateTime revokedAt, string? replacedByToken = null);
+    Task RevokeTokenAsync(string token, DateTimeOffset revokedAt, string? replacedByToken = null);
 
-    Task RevokeAllUserTokensAsync(Guid userId, DateTime revokedAt);
+    Task RevokeAllUserTokensAsync(Guid userId, DateTimeOffset revokedAt);
 }

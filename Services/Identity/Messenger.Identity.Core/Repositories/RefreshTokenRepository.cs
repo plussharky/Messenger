@@ -31,7 +31,7 @@ internal sealed class RefreshTokenRepository(ConnectionString connectionString)
             });
     }
 
-    public async Task RevokeTokenAsync(string token, DateTime revokedAt, string? replacedByToken = null)
+    public async Task RevokeTokenAsync(string token, DateTimeOffset revokedAt, string? replacedByToken = null)
     {
         using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();
@@ -46,7 +46,7 @@ internal sealed class RefreshTokenRepository(ConnectionString connectionString)
             });
     }
 
-    public async Task RevokeAllUserTokensAsync(Guid userId, DateTime revokedAt)
+    public async Task RevokeAllUserTokensAsync(Guid userId, DateTimeOffset revokedAt)
     {
         using var connection = new NpgsqlConnection(connectionString.Value);
         await connection.OpenAsync();

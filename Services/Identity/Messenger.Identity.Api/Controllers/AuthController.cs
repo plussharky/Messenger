@@ -1,7 +1,6 @@
 using AutoMapper;
 using Messenger.Identity.Api.DTOs;
 using Messenger.Identity.Core.BusinessLogic;
-using Messenger.Identity.Core.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

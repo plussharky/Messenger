@@ -8,13 +8,13 @@ public sealed class RefreshToken
 
     public required string Token { get; init; }
 
-    public required DateTime ExpiresAt { get; init; }
+    public required DateTimeOffset ExpiresAt { get; init; }
 
-    public required DateTime CreatedAt { get; init; }
+    public required DateTimeOffset CreatedAt { get; init; }
 
     public required bool IsRevoked { get; init; }
 
-    public DateTime? RevokedAt { get; init; }
+    public DateTimeOffset? RevokedAt { get; init; }
 
     public string? ReplacedByToken { get; init; }
 }
