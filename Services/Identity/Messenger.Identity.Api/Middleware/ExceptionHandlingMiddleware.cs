@@ -4,8 +4,8 @@ using Messenger.Identity.Core.Exceptions;
 namespace Messenger.Identity.Api.Middleware;
 
 public sealed class ExceptionHandlingMiddleware(
-        RequestDelegate next,
-        ILogger<ExceptionHandlingMiddleware> logger)
+    RequestDelegate next,
+    ILogger<ExceptionHandlingMiddleware> logger)
 {
     public async Task InvokeAsync(HttpContext context)
     {
