@@ -1,5 +1,4 @@
 using System.Text;
-using Messenger.Identity.Api.Middleware;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -52,8 +51,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseExceptionHandling();
 
 app.UseHttpsRedirection();
 

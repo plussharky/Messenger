@@ -1,4 +1,4 @@
-using Messenger.Identity.Core.Exceptions;
+using CSharpFunctionalExtensions;
 using Messenger.Identity.Core.Models;
 
 namespace Messenger.Identity.Core.Services;
@@ -9,54 +9,58 @@ internal sealed class IdentityService(
     IRefreshTokenService refreshTokenService)
     : IIdentityService
 {
-    public async Task<Guid> RegisterUserAsync(string email, string password)
+    public async Task<Result<Guid>> RegisterUserAsync(string email, string password)
     {
-        try
-        {
-            return await userService.RegisterUserAsync(email, password);
-        }
-        catch (EmailAlreadyExistsException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            throw new RegistrationFailedException("Ошибка регистрации пользователя", ex);
-        }
+        return await userService.RegisterUserAsync(email, password);
     }
 
-    public async Task<LoginResponse> LoginAsync(string email, string password)
+    public async Task<Result<LoginResponse>> LoginAsync(string email, string password)
     {
-        var user = await userService.AuthenticateUserAsync(email, password);
-        if (user == null)
+        var userResult = await userService.AuthenticateUserAsync(email, password);
+        if (userResult.IsFailure)
         {
-            throw new InvalidCredentialsException();
+            return Result.Failure<LoginResponse>(userResult.Error);
         }
 
-        return await GenerateTokensAsync(user.Id);
+        return await GenerateTokensAsync(userResult.Value.Id);
     }
 
-    public async Task<LoginResponse> RefreshTokenAsync(string refreshToken)
+    public async Task<Result<LoginResponse>> RefreshTokenAsync(string refreshToken)
     {
-        var oldToken = await refreshTokenService.ValidateAndGetTokenAsync(refreshToken);
-        if (oldToken == null)
+        var tokenResult = await refreshTokenService.ValidateAndGetTokenAsync(refreshToken);
+        if (tokenResult.IsFailure)
         {
-            throw new InvalidRefreshTokenException();
+            return Result.Failure<LoginResponse>(tokenResult.Error);
         }
 
-        var response = await GenerateTokensAsync(oldToken.UserId);
-        await refreshTokenService.RevokeTokenAsync(refreshToken, response.RefreshToken);
-        return response;
+        var responseResult = await GenerateTokensAsync(tokenResult.Value.UserId);
+        if (responseResult.IsFailure)
+        {
+            return responseResult;
+        }
+
+        var revokeResult = await refreshTokenService.RevokeTokenAsync(refreshToken, responseResult.Value.RefreshToken);
+        if (revokeResult.IsFailure)
+        {
+            return Result.Failure<LoginResponse>(revokeResult.Error);
+        }
+
+        return responseResult;
     }
 
-    private async Task<LoginResponse> GenerateTokensAsync(Guid userId)
+    private async Task<Result<LoginResponse>> GenerateTokensAsync(Guid userId)
     {
         var accessToken = tokenService.GenerateAccessToken(userId);
-        var refreshToken = await refreshTokenService.CreateAsync(userId);
-        return new LoginResponse
+        var refreshTokenResult = await refreshTokenService.CreateAsync(userId);
+        if (refreshTokenResult.IsFailure)
+        {
+            return Result.Failure<LoginResponse>(refreshTokenResult.Error);
+        }
+
+        return Result.Success(new LoginResponse
         {
             AccessToken = accessToken,
-            RefreshToken = refreshToken.Token,
-        };
+            RefreshToken = refreshTokenResult.Value.Token,
+        });
     }
 }

@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using CSharpFunctionalExtensions;
 using Messenger.Common.Services;
 using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repository;
@@ -15,7 +16,7 @@ internal sealed class RefreshTokenService(
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
-    public async Task<RefreshToken> CreateAsync(Guid userId)
+    public async Task<Result<RefreshToken>> CreateAsync(Guid userId)
     {
         var token = GenerateToken();
         var expiresAt = timeProvider.GetCurrentTime().UtcDateTime.AddDays(_jwtOptions.RefreshTokenExpirationDays);
@@ -29,37 +30,48 @@ internal sealed class RefreshTokenService(
             IsRevoked = false,
         };
         await refreshTokenRepository.CreateAsync(refreshToken);
-        return refreshToken;
+        return Result.Success(refreshToken);
     }
 
-    public async Task<RefreshToken?> GetByTokenAsync(string token) =>
-        await refreshTokenRepository.GetByTokenAsync(token);
+    public async Task<Result<RefreshToken>> GetByTokenAsync(string token)
+    {
+        var refreshToken = await refreshTokenRepository.GetByTokenAsync(token);
+        return refreshToken == null
+            ? Result.Failure<RefreshToken>("Токен не найден")
+            : Result.Success(refreshToken);
+    }
 
-    public async Task RevokeTokenAsync(string token, string? replacedByToken = null) =>
+    public async Task<Result> RevokeTokenAsync(string token, string? replacedByToken = null)
+    {
         await refreshTokenRepository.RevokeTokenAsync(token, timeProvider.GetCurrentTime().UtcDateTime, replacedByToken);
+        return Result.Success();
+    }
 
-    public async Task RevokeAllUserTokensAsync(Guid userId) =>
+    public async Task<Result> RevokeAllUserTokensAsync(Guid userId)
+    {
         await refreshTokenRepository.RevokeAllUserTokensAsync(userId, timeProvider.GetCurrentTime().UtcDateTime);
+        return Result.Success();
+    }
 
-    public async Task<RefreshToken?> ValidateAndGetTokenAsync(string token)
+    public async Task<Result<RefreshToken>> ValidateAndGetTokenAsync(string token)
     {
         var refreshToken = await refreshTokenRepository.GetByTokenAsync(token);
         if (refreshToken == null)
         {
-            return null;
+            return Result.Failure<RefreshToken>("Токен не найден");
         }
 
         if (refreshToken.IsRevoked)
         {
-            return null;
+            return Result.Failure<RefreshToken>("Токен отозван");
         }
 
         if (refreshToken.ExpiresAt < timeProvider.GetCurrentTime().UtcDateTime)
         {
-            return null;
+            return Result.Failure<RefreshToken>("Токен истек");
         }
 
-        return refreshToken;
+        return Result.Success(refreshToken);
     }
 
     private static string GenerateToken()

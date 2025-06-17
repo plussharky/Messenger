@@ -17,11 +17,17 @@ public sealed class AuthController(
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
     {
-        var userId = await identityService.RegisterUserAsync(request.Email, request.Password);
-        return Ok(new
+        var result = await identityService.RegisterUserAsync(request.Email, request.Password);
+        if (result.IsFailure)
         {
-            UserId = userId,
-        });
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Ошибка регистрации",
+                detail: result.Error,
+                instance: HttpContext.Request.Path);
+        }
+
+        return Ok(new { UserId = result.Value });
     }
 
     [HttpPost("login")]
@@ -29,7 +35,16 @@ public sealed class AuthController(
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
         var result = await identityService.LoginAsync(request.Email, request.Password);
-        var dto = mapper.Map<LoginResponseDto>(result);
+        if (result.IsFailure)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Ошибка входа",
+                detail: result.Error,
+                instance: HttpContext.Request.Path);
+        }
+
+        var dto = mapper.Map<LoginResponseDto>(result.Value);
         return Ok(dto);
     }
 
@@ -38,7 +53,16 @@ public sealed class AuthController(
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto request)
     {
         var result = await identityService.RefreshTokenAsync(request.RefreshToken);
-        var dto = mapper.Map<LoginResponseDto>(result);
+        if (result.IsFailure)
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: "Ошибка обновления токена",
+                detail: result.Error,
+                instance: HttpContext.Request.Path);
+        }
+
+        var dto = mapper.Map<LoginResponseDto>(result.Value);
         return Ok(dto);
     }
 }

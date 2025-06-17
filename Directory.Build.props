@@ -11,6 +11,10 @@
     <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Api'))">
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>
+
+    <ItemGroup Condition="$(MSBuildProjectName.StartsWith('Messenger.Identity'))">
+        <PackageReference Include="CSharpFunctionalExtensions" Version="3.6.0" />
+    </ItemGroup>
     
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
