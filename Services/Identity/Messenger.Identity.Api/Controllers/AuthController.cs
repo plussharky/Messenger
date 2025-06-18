@@ -27,7 +27,10 @@ public sealed class AuthController(
                 instance: HttpContext.Request.Path);
         }
 
-        return Ok(new { UserId = result.Value });
+        return Ok(new RegisterResponseDto
+        {
+            UserId = result.Value,
+        });
     }
 
     [HttpPost("login")]

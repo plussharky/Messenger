@@ -60,3 +60,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 await app.RunAsync();
+
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Sonar Code Smell", "S1118", Justification = "Marker class for testing purposes")]
+public sealed partial class Program
+{
+}
