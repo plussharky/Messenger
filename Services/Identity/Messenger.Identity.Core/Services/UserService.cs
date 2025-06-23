@@ -14,32 +14,24 @@ internal sealed class UserService(
 {
     public async Task<Result<Guid, RegisterError>> RegisterUserAsync(string email, string password)
     {
-        if (await userRepository.IsEmailExistsAsync(email))
-        {
-            return Result.Failure<Guid, RegisterError>(RegisterError.EmailAlreadyExists);
-        }
+        var maybeUser = await Maybe.From(async () => await userRepository.GetUserCredentialsByEmailAsync(email));
 
-        var passwordHash = passwordHasher.HashPassword(password);
-        var createdAt = timeProvider.GetCurrentTime();
-        var userId = await userRepository.CreateUserAsync(email, passwordHash, createdAt);
-        return Result.Success<Guid, RegisterError>(userId);
+        return await maybeUser.Match(
+            _ => Task.FromResult(Result.Failure<Guid, RegisterError>(RegisterError.EmailAlreadyExists)),
+            async () =>
+            {
+                var passwordHash = passwordHasher.HashPassword(password);
+                var createdAt = timeProvider.GetCurrentTime();
+                var userId = await userRepository.CreateUserAsync(email, passwordHash, createdAt);
+                return Result.Success<Guid, RegisterError>(userId);
+            });
     }
 
     public async Task<Result<User, LoginError>> AuthenticateUserAsync(string email, string password)
     {
-        var credentials = await userRepository.GetUserCredentialsByEmailAsync(email);
-        if (credentials == null)
-        {
-            return Result.Failure<User, LoginError>(LoginError.EmailNotFound);
-        }
-
-        var isValidPassword = passwordHasher.VerifyPassword(password, credentials.PasswordHash);
-        if (!isValidPassword)
-        {
-            return Result.Failure<User, LoginError>(LoginError.InvalidPassword);
-        }
-
-        var user = await userRepository.GetUserByIdAsync(credentials.UserId);
-        return Result.Success<User, LoginError>(user!);
+        return await Maybe.From(async () => await userRepository.GetUserCredentialsByEmailAsync(email))
+            .ToResult(LoginError.EmailNotFound)
+            .Ensure(credentials => passwordHasher.VerifyPassword(password, credentials.PasswordHash), LoginError.InvalidPassword)
+            .Map(async credentials => await userRepository.GetUserByIdAsync(credentials.UserId));
     }
 }

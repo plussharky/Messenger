@@ -10,50 +10,42 @@ internal sealed class IdentityService(
     IRefreshTokenService refreshTokenService)
     : IIdentityService
 {
-    public async Task<Result<Guid, RegisterError>> RegisterUserAsync(string email, string password)
+    public Task<Result<Guid, RegisterError>> RegisterUserAsync(string email, string password)
     {
-        return await userService.RegisterUserAsync(email, password);
+        return userService.RegisterUserAsync(email, password);
     }
 
-    public async Task<Result<LoginResponse, LoginError>> LoginAsync(string email, string password)
+    public Task<Result<LoginResponse, LoginError>> LoginAsync(string email, string password)
     {
-        var userResult = await userService.AuthenticateUserAsync(email, password);
-        if (userResult.IsFailure)
-        {
-            return Result.Failure<LoginResponse, LoginError>(userResult.Error);
-        }
-
-        return await GenerateTokensAsync(userResult.Value.Id)
-            .MapError(_ => LoginError.TokenGenerationFailed);
+        return userService.AuthenticateUserAsync(email, password)
+            .Bind(user => GenerateTokensAsync(user.Id).MapError(_ => LoginError.TokenGenerationFailed));
     }
 
-    public async Task<Result<LoginResponse, RefreshTokenError>> RefreshTokenAsync(string refreshToken)
+    public Task<Result<LoginResponse, RefreshTokenError>> RefreshTokenAsync(string refreshToken)
     {
-        var tokenResult = await refreshTokenService.ValidateAndGetTokenAsync(refreshToken);
-        if (tokenResult.IsFailure)
-        {
-            return Result.Failure<LoginResponse, RefreshTokenError>(tokenResult.Error);
-        }
+        return refreshTokenService.ValidateAndGetTokenAsync(refreshToken)
+            .Bind(async token =>
+            {
+                var responseResult = await GenerateTokensAsync(token.UserId);
 
-        var responseResult = await GenerateTokensAsync(tokenResult.Value.UserId);
-        await refreshTokenService.RevokeTokenAsync(refreshToken, responseResult.Value.RefreshToken);
-
-        return responseResult;
+                return await refreshTokenService
+                    .RevokeTokenAsync(refreshToken, responseResult.Value.RefreshToken)
+                    .Bind(() => responseResult);
+            });
     }
 
-    private async Task<Result<LoginResponse, RefreshTokenError>> GenerateTokensAsync(Guid userId)
+    private Task<Result<LoginResponse, RefreshTokenError>> GenerateTokensAsync(Guid userId)
     {
-        var accessToken = tokenService.GenerateAccessToken(userId);
-        var refreshTokenResult = await refreshTokenService.CreateAsync(userId);
-        if (refreshTokenResult.IsFailure)
-        {
-            return Result.Failure<LoginResponse, RefreshTokenError>(refreshTokenResult.Error);
-        }
+        return refreshTokenService.CreateAsync(userId)
+            .Map(refreshToken =>
+            {
+                var accessToken = tokenService.GenerateAccessToken(userId);
 
-        return Result.Success<LoginResponse, RefreshTokenError>(new LoginResponse
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshTokenResult.Value.Token,
-        });
+                return new LoginResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken.Token,
+                };
+            });
     }
 }

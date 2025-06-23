@@ -30,49 +30,37 @@ internal sealed class RefreshTokenService(
             CreatedAt = timeProvider.GetCurrentTime().UtcDateTime,
             IsRevoked = false,
         };
+
         await refreshTokenRepository.CreateAsync(refreshToken);
+
         return Result.Success<RefreshToken, RefreshTokenError>(refreshToken);
     }
 
-    public async Task<Result<RefreshToken, RefreshTokenError>> GetByTokenAsync(string token)
+    public Task<Result<RefreshToken, RefreshTokenError>> GetByTokenAsync(string token)
     {
-        var refreshToken = await refreshTokenRepository.GetByTokenAsync(token);
-        return refreshToken == null
-            ? Result.Failure<RefreshToken, RefreshTokenError>(RefreshTokenError.TokenNotFound)
-            : Result.Success<RefreshToken, RefreshTokenError>(refreshToken);
+        return Maybe.From(async () => await refreshTokenRepository.GetByTokenAsync(token))
+            .ToResult(RefreshTokenError.TokenNotFound);
     }
 
     public async Task<UnitResult<RefreshTokenError>> RevokeTokenAsync(string token, string? replacedByToken = null)
     {
         await refreshTokenRepository.RevokeTokenAsync(token, timeProvider.GetCurrentTime().UtcDateTime, replacedByToken);
+
         return UnitResult.Success<RefreshTokenError>();
     }
 
     public async Task<UnitResult<RefreshTokenError>> RevokeAllUserTokensAsync(Guid userId)
     {
         await refreshTokenRepository.RevokeAllUserTokensAsync(userId, timeProvider.GetCurrentTime().UtcDateTime);
+
         return UnitResult.Success<RefreshTokenError>();
     }
 
-    public async Task<Result<RefreshToken, RefreshTokenError>> ValidateAndGetTokenAsync(string token)
+    public Task<Result<RefreshToken, RefreshTokenError>> ValidateAndGetTokenAsync(string token)
     {
-        var refreshToken = await refreshTokenRepository.GetByTokenAsync(token);
-        if (refreshToken == null)
-        {
-            return Result.Failure<RefreshToken, RefreshTokenError>(RefreshTokenError.TokenNotFound);
-        }
-
-        if (refreshToken.IsRevoked)
-        {
-            return Result.Failure<RefreshToken, RefreshTokenError>(RefreshTokenError.TokenRevoked);
-        }
-
-        if (refreshToken.ExpiresAt < timeProvider.GetCurrentTime().UtcDateTime)
-        {
-            return Result.Failure<RefreshToken, RefreshTokenError>(RefreshTokenError.TokenExpired);
-        }
-
-        return Result.Success<RefreshToken, RefreshTokenError>(refreshToken);
+        return GetByTokenAsync(token)
+            .Ensure(t => !t.IsRevoked, RefreshTokenError.TokenRevoked)
+            .Ensure(t => t.ExpiresAt >= timeProvider.GetCurrentTime().UtcDateTime, RefreshTokenError.TokenExpired);
     }
 
     private static string GenerateToken()
