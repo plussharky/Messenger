@@ -1,13 +1,14 @@
 using CSharpFunctionalExtensions;
+using Messenger.Identity.Core.Domain.Errors;
 using Messenger.Identity.Core.Models;
 
 namespace Messenger.Identity.Core.Services;
 
 public interface IIdentityService
 {
-    Task<Result<Guid>> RegisterUserAsync(string email, string password);
+    Task<Result<Guid, RegisterError>> RegisterUserAsync(string email, string password);
 
-    Task<Result<LoginResponse>> LoginAsync(string email, string password);
+    Task<Result<LoginResponse, LoginError>> LoginAsync(string email, string password);
 
-    Task<Result<LoginResponse>> RefreshTokenAsync(string refreshToken);
+    Task<Result<LoginResponse, RefreshTokenError>> RefreshTokenAsync(string refreshToken);
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Messenger.Identity.Api.Dtos;
+using Messenger.Identity.Api.Errors;
 using Messenger.Identity.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace Messenger.Identity.Api.Controllers;
 [Route("api/auth")]
 public sealed class AuthController(
     IIdentityService identityService,
+    IErrorHandler errorHandler,
     IMapper mapper)
     : ControllerBase
 {
@@ -20,11 +22,7 @@ public sealed class AuthController(
         var result = await identityService.RegisterUserAsync(request.Email, request.Password);
         if (result.IsFailure)
         {
-            return Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: "Ошибка регистрации",
-                detail: result.Error,
-                instance: HttpContext.Request.Path);
+            return errorHandler.Handle(result.Error);
         }
 
         return Ok(new RegisterResponseDto
@@ -40,11 +38,7 @@ public sealed class AuthController(
         var result = await identityService.LoginAsync(request.Email, request.Password);
         if (result.IsFailure)
         {
-            return Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: "Ошибка входа",
-                detail: result.Error,
-                instance: HttpContext.Request.Path);
+            return errorHandler.Handle(result.Error);
         }
 
         var dto = mapper.Map<LoginResponseDto>(result.Value);
@@ -58,11 +52,7 @@ public sealed class AuthController(
         var result = await identityService.RefreshTokenAsync(request.RefreshToken);
         if (result.IsFailure)
         {
-            return Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: "Ошибка обновления токена",
-                detail: result.Error,
-                instance: HttpContext.Request.Path);
+            return errorHandler.Handle(result.Error);
         }
 
         var dto = mapper.Map<LoginResponseDto>(result.Value);

@@ -1,4 +1,5 @@
 using System.Text;
+using Messenger.Identity.Api.Errors;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,6 +22,8 @@ builder.Services.AddIdentityCoreServices(new ConnectionString
     Value = connectionString,
 }, builder.Configuration.GetSection("Jwt").Bind);
 builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfile).Assembly);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IErrorHandler, ErrorHandler>();
 
 builder.Services.AddAuthentication(options =>
 {

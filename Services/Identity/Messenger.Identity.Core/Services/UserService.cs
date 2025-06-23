@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using Messenger.Common.Services;
+using Messenger.Identity.Core.Domain.Errors;
 using Messenger.Identity.Core.Repository;
 using Messenger.Identity.Core.Repository.Entities;
 
@@ -11,34 +12,34 @@ internal sealed class UserService(
     IPasswordHasher passwordHasher)
     : IUserService
 {
-    public async Task<Result<Guid>> RegisterUserAsync(string email, string password)
+    public async Task<Result<Guid, RegisterError>> RegisterUserAsync(string email, string password)
     {
         if (await userRepository.IsEmailExistsAsync(email))
         {
-            return Result.Failure<Guid>($"Email {email} уже существует");
+            return Result.Failure<Guid, RegisterError>(RegisterError.EmailAlreadyExists);
         }
 
         var passwordHash = passwordHasher.HashPassword(password);
         var createdAt = timeProvider.GetCurrentTime();
         var userId = await userRepository.CreateUserAsync(email, passwordHash, createdAt);
-        return Result.Success(userId);
+        return Result.Success<Guid, RegisterError>(userId);
     }
 
-    public async Task<Result<User>> AuthenticateUserAsync(string email, string password)
+    public async Task<Result<User, LoginError>> AuthenticateUserAsync(string email, string password)
     {
         var credentials = await userRepository.GetUserCredentialsByEmailAsync(email);
         if (credentials == null)
         {
-            return Result.Failure<User>($"Пользователь с email {email} не найден");
+            return Result.Failure<User, LoginError>(LoginError.EmailNotFound);
         }
 
         var isValidPassword = passwordHasher.VerifyPassword(password, credentials.PasswordHash);
         if (!isValidPassword)
         {
-            return Result.Failure<User>("Неверный пароль");
+            return Result.Failure<User, LoginError>(LoginError.InvalidPassword);
         }
 
         var user = await userRepository.GetUserByIdAsync(credentials.UserId);
-        return Result.Success(user!);
+        return Result.Success<User, LoginError>(user!);
     }
 }
