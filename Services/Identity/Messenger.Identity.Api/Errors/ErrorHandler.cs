@@ -16,7 +16,7 @@ public sealed class ErrorHandler(IHttpContextAccessor httpContextAccessor)
         var (statusCode, title, detail) = error switch
         {
             RegisterError.EmailAlreadyExists => (
-                StatusCodes.Status409Conflict,
+                StatusCodes.Status400BadRequest,
                 RegistrationErrorTitle,
                 "Пользователь с таким email уже существует."),
             _ => (

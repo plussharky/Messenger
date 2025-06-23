@@ -13,22 +13,23 @@ namespace Messenger.Identity.Core;
 public static class IdentityCoreServiceCollectionExtensions
 {
     public static IServiceCollection AddIdentityCoreServices(
-        this IServiceCollection services, ConnectionString connectionString, Action<JwtOptions> configureJwt)
+        this IServiceCollection services, Action<JwtOptions> configureJwt)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         services
             .AddFluentMigratorCore()
-            .ConfigureRunner(rb => rb
-                .AddPostgres()
-                .WithGlobalConnectionString(connectionString.Value)
-                .WithGlobalCommandTimeout(TimeSpan.FromMinutes(5))
-                .ScanIn(typeof(DatabaseMigrationService).Assembly).For.Migrations())
+            .ConfigureRunner(
+                rb => rb
+                    .AddPostgres()
+                    .WithGlobalConnectionString(
+                        sp => sp.GetRequiredService<ConnectionString>().Value)
+                    .WithGlobalCommandTimeout(TimeSpan.FromMinutes(5))
+                    .ScanIn(typeof(DatabaseMigrationService).Assembly).For.Migrations())
             .AddLogging(lb => lb.AddFluentMigratorConsole())
             .AddScoped<IVersionTableMetaData, CustomVersionTableMetaData>();
 
         services.AddHostedService<DatabaseMigrationService>();
-        services.AddSingleton(connectionString);
         services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();

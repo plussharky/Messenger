@@ -1,10 +1,8 @@
 using FluentMigrator.Runner;
-using FluentMigrator.Runner.VersionTableInfo;
 using Messenger.Common.Services;
 using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repository;
 using Messenger.Identity.Core.Repository.Entities;
-using Messenger.Identity.Core.Repository.Migrations;
 using Messenger.Identity.Core.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -42,37 +40,18 @@ public sealed class IdentityWebApplicationFactory
     {
         builder.ConfigureServices(services =>
         {
-            var dbConnectionFactorydescriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(IDbConnectionFactory));
+            var connectionStringDescriptor = services.SingleOrDefault(
+                d => d.ServiceType == typeof(ConnectionString));
 
-            if (dbConnectionFactorydescriptor != null)
+            if (connectionStringDescriptor != null)
             {
-                services.Remove(dbConnectionFactorydescriptor);
+                services.Remove(connectionStringDescriptor);
             }
 
-            var migrationServices = services.Where(d =>
-                d.ServiceType.Namespace?.StartsWith("FluentMigrator", StringComparison.Ordinal) == true ||
-                d.ImplementationType?.Namespace?.StartsWith("FluentMigrator", StringComparison.Ordinal) == true).ToList();
-
-            foreach (var service in migrationServices)
-            {
-                services.Remove(service);
-            }
-
-            services.AddSingleton<IDbConnectionFactory>(_ => new DbConnectionFactory(new ConnectionString()
+            services.AddSingleton(_ => new ConnectionString
             {
                 Value = _connectionString,
-            }));
-
-            services
-                .AddFluentMigratorCore()
-                .ConfigureRunner(rb => rb
-                    .AddPostgres()
-                    .WithGlobalConnectionString(_connectionString)
-                    .WithGlobalCommandTimeout(TimeSpan.FromMinutes(5))
-                    .ScanIn(typeof(DatabaseMigrationService).Assembly).For.Migrations())
-                .AddLogging(lb => lb.AddFluentMigratorConsole())
-                .AddScoped<IVersionTableMetaData, CustomVersionTableMetaData>();
+            });
         });
     }
 

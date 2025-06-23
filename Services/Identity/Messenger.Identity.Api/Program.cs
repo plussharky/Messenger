@@ -14,13 +14,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+var connectionStringValue = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddIdentityCoreServices(new ConnectionString
-{
-    Value = connectionString,
-}, builder.Configuration.GetSection("Jwt").Bind);
+builder.Services.AddSingleton(new ConnectionString { Value = connectionStringValue });
+
+builder.Services.AddIdentityCoreServices(builder.Configuration.GetSection("Jwt").Bind);
 builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfile).Assembly);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IErrorHandler, ErrorHandler>();
