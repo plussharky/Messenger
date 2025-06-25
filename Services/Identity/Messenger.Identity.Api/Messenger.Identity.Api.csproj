@@ -7,12 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Messenger.Identity.Core\Messenger.Identity.Core.csproj" />
+    <ProjectReference Include="..\..\Common\Messenger.Common.csproj" />
   </ItemGroup>
 
 </Project>

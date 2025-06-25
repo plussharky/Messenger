@@ -1,3 +1,4 @@
+using Messenger.Common.Extensions;
 using Messenger.Messages.Api.Mappings;
 using Messenger.Messages.Application;
 using Messenger.Messages.Domain;
@@ -26,6 +27,8 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
+builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("Jwt"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,6 +41,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

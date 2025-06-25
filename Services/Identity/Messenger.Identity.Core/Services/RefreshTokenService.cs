@@ -1,8 +1,8 @@
 using System.Security.Cryptography;
 using CSharpFunctionalExtensions;
+using Messenger.Common.Options;
 using Messenger.Common.Services;
 using Messenger.Identity.Core.Domain.Errors;
-using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repository;
 using Messenger.Identity.Core.Repository.Entities;
 using Microsoft.Extensions.Options;

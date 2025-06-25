@@ -1,4 +1,4 @@
-namespace Messenger.Identity.Core.Options;
+namespace Messenger.Common.Options;
 
 public sealed class JwtOptions
 {

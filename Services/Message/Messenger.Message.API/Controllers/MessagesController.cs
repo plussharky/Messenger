@@ -2,12 +2,14 @@ using AutoMapper;
 using Messenger.Messages.Api.DTOs;
 using Messenger.Messages.Application.Requests;
 using Messenger.Messages.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Messages.Api.Controllers;
 
 [ApiController]
 [Route("api/messages")]
+[Authorize]
 public sealed class MessagesController(IMessageService messageService, IMapper mapper)
     : ControllerBase
 {

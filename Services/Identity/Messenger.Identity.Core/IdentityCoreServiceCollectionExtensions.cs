@@ -3,6 +3,7 @@ using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
 using Hangfire;
 using Hangfire.Redis.StackExchange;
+using Messenger.Common.Options;
 using Messenger.Common.Services;
 using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repository;

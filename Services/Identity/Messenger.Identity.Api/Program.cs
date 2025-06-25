@@ -1,9 +1,7 @@
-using System.Text;
+using Messenger.Common.Extensions;
 using Messenger.Identity.Api.Errors;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,26 +26,7 @@ builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfil
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IErrorHandler, ErrorHandler>();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()
-        ?? throw new InvalidOperationException("JWT configuration is missing");
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtOptions.Issuer,
-        ValidAudience = jwtOptions.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey)),
-    };
-});
+builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("Jwt"));
 
 var app = builder.Build();
 
