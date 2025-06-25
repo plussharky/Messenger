@@ -17,7 +17,11 @@ builder.Services.AddSwaggerGen();
 var connectionStringValue = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis")
+    ?? throw new InvalidOperationException("Connection string 'Redis' not found.");
+
 builder.Services.AddSingleton(new ConnectionString { Value = connectionStringValue });
+builder.Services.AddSingleton(new RedisConnectionString { Value = redisConnectionString });
 
 builder.Services.AddIdentityCoreServices(builder.Configuration.GetSection("Jwt").Bind);
 builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfile).Assembly);
@@ -60,6 +64,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseIdentityCore();
 
 await app.RunAsync();
 

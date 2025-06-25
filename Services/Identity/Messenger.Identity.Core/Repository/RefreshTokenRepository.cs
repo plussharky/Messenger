@@ -61,4 +61,15 @@ internal sealed class RefreshTokenRepository(IDbConnectionFactory connectionFact
                 RevokedAt = revokedAt,
             });
     }
+
+    public async Task<int> DeleteExpiredTokensAsync(DateTimeOffset untilTime)
+    {
+        await using var connection = await connectionFactory.OpenConnectionAsync();
+        return await connection.ExecuteAsync(
+            "DELETE FROM public.refresh_tokens WHERE expires_at < @UntilTime",
+            new
+            {
+                UntilTime = untilTime,
+            });
+    }
 }

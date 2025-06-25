@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <ItemGroup>
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="10.10.0.116381" PrivateAssets="all" />
-        <PackageReference Include="Meziantou.Analyzer" Version="2.0.201" PrivateAssets="all" />
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="10.12.0.118525" PrivateAssets="all" />
+        <PackageReference Include="Meziantou.Analyzer" Version="2.0.202" PrivateAssets="all" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Analyzers" Version="4.13.1" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.13.1" PrivateAssets="all" />
@@ -18,11 +18,11 @@
 
     <ItemGroup Condition="$(MSBuildProjectName.Contains('Test'))">
         <PackageReference Include="AutoFixture" Version="4.18.1" />
-        <PackageReference Include="FluentAssertions" Version="8.3.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+        <PackageReference Include="FluentAssertions" Version="8.4.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.6" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
         <PackageReference Include="xunit" Version="2.9.3" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

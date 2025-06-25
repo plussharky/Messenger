@@ -11,4 +11,6 @@ public interface IRefreshTokenRepository
     Task RevokeTokenAsync(string token, DateTimeOffset revokedAt, string? replacedByToken = null);
 
     Task RevokeAllUserTokensAsync(Guid userId, DateTimeOffset revokedAt);
+
+    Task<int> DeleteExpiredTokensAsync(DateTimeOffset untilTime);
 }
