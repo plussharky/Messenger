@@ -1,4 +1,6 @@
 using ChatClient;
+using ChatClient.Options;
+using ChatClient.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
@@ -7,7 +9,18 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7125/") });
+var apiIdentityUrl = builder.Configuration["ApiIdentityUrl"]
+    ?? throw new InvalidOperationException("ApiIdentityUrl is not configured in appsettings.json");
+
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"]
+    ?? throw new InvalidOperationException("ApiBaseUrl is not configured in appsettings.json");
+
+builder.Services.AddSingleton(new ApiIdentityUrl() { Value = apiIdentityUrl });
+builder.Services.AddSingleton(new ApiBaseUrl() { Value = apiBaseUrl });
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped(sp => new IdentityHttpClient(sp.GetRequiredService<ApiIdentityUrl>()));
+builder.Services.AddScoped<AuthorizedHttpClient>();
 
 builder.Services.AddMudServices();
 

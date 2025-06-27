@@ -1,40 +1,53 @@
 @page "/"
 @using ChatClient.Models
+@using ChatClient.Services
 @using MudBlazor
-@inject HttpClient Http
+@inject AuthorizedHttpClient Http
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
-    <MudText Typo="Typo.h5">Chat</MudText>
+    <MudStack>
+        <MudStack Row Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h5">Чат</MudText>
+            <MudButton OnClick="HandleLogout"
+                       Color="Color.Secondary"
+                       Variant="Variant.Outlined"
+                       StartIcon="@Icons.Material.Filled.Logout">
+                Выйти
+            </MudButton>
+        </MudStack>
 
-    <MudTextField @bind-Value="newMessage" Label="Enter message" Variant="Variant.Filled" />
-    <MudButton OnClick="SendMessage" Color="Color.Primary" Class="mt-2">Send</MudButton>
+        <MudTextField @bind-Value="newMessage" Label="Введите сообщение" Variant="Variant.Filled" />
+        <MudButton OnClick="SendMessage" Color="Color.Primary" Class="mt-2">Отправить</MudButton>
 
-    <MudDivider Class="my-2" />
+        <MudDivider Class="my-2" />
 
-    <MudList T="ChatMessage" Dense="true">
-        @foreach (var msg in messages)
-        {
-            <MudListItem T="ChatMessage" Value="msg">
-                @if (editMessageId == msg.Id)
-                {
-                    <MudTextField @bind-Value="editMessageText" Variant="Variant.Filled" />
-                    <MudButton OnClick="@(() => SaveEdit(msg.Id))" Color="Color.Success" Size="Size.Small">Save</MudButton>
-                    <MudButton OnClick="CancelEdit" Color="Color.Secondary" Size="Size.Small">Cancel</MudButton>
-                }
-                else
-                {
-                    @msg.Text
-                    <MudButton StartIcon="@Icons.Material.Filled.Edit"
-                               OnClick="@(() => StartEdit(msg))"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               Class="ml-2">
-                        Edit
-                    </MudButton>
-                }
-            </MudListItem>
-        }
-    </MudList>
+        <MudList T="ChatMessage" Dense="true">
+            @foreach (var msg in messages)
+            {
+                <MudListItem T="ChatMessage" Value="msg">
+                    @if (editMessageId == msg.Id)
+                    {
+                        <MudTextField @bind-Value="editMessageText" Variant="Variant.Filled" />
+                        <MudButton OnClick="@(() => SaveEdit(msg.Id))" Color="Color.Success" Size="Size.Small">Сохранить</MudButton>
+                        <MudButton OnClick="CancelEdit" Color="Color.Secondary" Size="Size.Small">Отмена</MudButton>
+                    }
+                    else
+                    {
+                        @msg.Text
+                        <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                                   OnClick="@(() => StartEdit(msg))"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   Class="ml-2">
+                            Изменить
+                        </MudButton>
+                    }
+                </MudListItem>
+            }
+        </MudList>
+    </MudStack>
 </MudContainer>
 
 @code {
@@ -48,12 +61,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadMessages();
+        var isAuthenticated = await AuthService.IsAuthenticatedAsync();
+        
+        if (isAuthenticated)
+        {
+            await LoadMessages();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     private async Task LoadMessages()
     {
-        messages = await Http.GetFromJsonAsync<List<ChatMessage>>(MessagesApiRoute) ?? new List<ChatMessage>();
+            messages = await Http.GetFromJsonAsync<List<ChatMessage>>(MessagesApiRoute) ?? new List<ChatMessage>();
     }
 
     private async Task SendMessage()
@@ -98,5 +120,11 @@
     {
         editMessageId = null;
         editMessageText = string.Empty;
+    }
+
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/login");
     }
 }

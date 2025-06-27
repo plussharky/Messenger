@@ -1,0 +1,103 @@
+@page "/login"
+@using ChatClient.Models
+@using ChatClient.Services
+@using MudBlazor
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Вход в систему</MudText>
+        </MudCardHeader>
+
+        <MudCardContent>
+            <MudForm @bind-IsValid="@isValid">
+                <MudTextField @bind-Value="email"
+                             Label="Email"
+                             Variant="Variant.Filled"
+                             Required="true"
+                             RequiredError="Email обязателен"
+                             Pattern="@emailPattern"
+                             ErrorText="Введите корректный email адрес" />
+
+                <MudTextField @bind-Value="password"
+                             Label="Пароль"
+                             Variant="Variant.Filled"
+                             Required="true"
+                             RequiredError="Пароль обязателен"
+                             InputType="InputType.Password" />
+            </MudForm>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-3">@errorMessage</MudAlert>
+            }
+        </MudCardContent>
+
+        <MudCardActions>
+            <MudButton OnClick="HandleLogin"
+                       Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       Disabled="@(!isValid || isLoading)"
+                       StartIcon="@Icons.Material.Filled.Login">
+                @if (isLoading)
+                {
+                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                }
+                else
+                {
+                    <span>Войти</span>
+                }
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private bool isValid;
+    private bool isLoading;
+    private string email = string.Empty;
+    private string password = string.Empty;
+    private string errorMessage = string.Empty;
+    private const string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+    private async Task HandleLogin()
+    {
+        if (!isValid)
+        {
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = string.Empty;
+
+        try
+        {
+            var loginRequest = new LoginRequest
+            {
+                Email = email,
+                Password = password
+            };
+
+            var success = await AuthService.LoginAsync(loginRequest);
+
+            if (success)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Неверный email или пароль";
+            }
+        }
+        catch
+        {
+            errorMessage = "Произошла ошибка при входе в систему";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+} 

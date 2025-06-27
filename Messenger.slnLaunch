@@ -13,6 +13,10 @@
       {
         "Path": "docker-compose.dcproj",
         "Action": "Start"
+      },
+      {
+        "Path": "Services\\Identity\\Messenger.Identity.Api\\Messenger.Identity.Api.csproj",
+        "Action": "Start"
       }
     ]
   }

@@ -9,7 +9,7 @@ namespace Messenger.Messages.Api.Controllers;
 
 [ApiController]
 [Route("api/messages")]
-[Authorize]
+[Authorize(AuthenticationSchemes = "Bearer")]
 public sealed class MessagesController(IMessageService messageService, IMapper mapper)
     : ControllerBase
 {
