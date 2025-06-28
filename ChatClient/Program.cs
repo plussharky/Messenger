@@ -20,7 +20,13 @@ builder.Services.AddSingleton(new ApiBaseUrl() { Value = apiBaseUrl });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(sp => new IdentityHttpClient(sp.GetRequiredService<ApiIdentityUrl>()));
-builder.Services.AddScoped<AuthorizedHttpClient>();
+
+builder.Services.AddScoped<AuthenticationHandler>();
+builder.Services.AddHttpClient(HttpClientNames.AuthorizedClient, client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+})
+.AddHttpMessageHandler<AuthenticationHandler>();
 
 builder.Services.AddMudServices();
 

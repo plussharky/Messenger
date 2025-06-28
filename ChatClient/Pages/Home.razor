@@ -1,8 +1,10 @@
 @page "/"
 @using ChatClient.Models
 @using ChatClient.Services
+@using ChatClient.Options
 @using MudBlazor
-@inject AuthorizedHttpClient Http
+@using System.Net.Http.Json
+@inject IHttpClientFactory HttpClientFactory
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 
@@ -75,7 +77,13 @@
 
     private async Task LoadMessages()
     {
-            messages = await Http.GetFromJsonAsync<List<ChatMessage>>(MessagesApiRoute) ?? new List<ChatMessage>();
+        var httpClient = HttpClientFactory.CreateClient(HttpClientNames.AuthorizedClient);
+        var response = await httpClient.GetAsync(MessagesApiRoute);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            messages = await response.Content.ReadFromJsonAsync<List<ChatMessage>>() ?? new List<ChatMessage>();
+        }
     }
 
     private async Task SendMessage()
@@ -105,7 +113,8 @@
             Text = text
         };
 
-        await Http.PutAsJsonAsync($"{MessagesApiRoute}/{messageId}", sendMessageRequest);
+        var httpClient = HttpClientFactory.CreateClient(HttpClientNames.AuthorizedClient);
+        await httpClient.PutAsJsonAsync($"{MessagesApiRoute}/{messageId}", sendMessageRequest);
 
         await LoadMessages();
     }
