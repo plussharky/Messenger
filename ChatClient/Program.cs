@@ -22,10 +22,12 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(sp => new IdentityHttpClient(sp.GetRequiredService<ApiIdentityUrl>()));
 
 builder.Services.AddScoped<AuthenticationHandler>();
+builder.Services.AddScoped<RetryPolicyHandler>();
 builder.Services.AddHttpClient(HttpClientNames.AuthorizedClient, client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
 })
+.AddHttpMessageHandler<RetryPolicyHandler>()
 .AddHttpMessageHandler<AuthenticationHandler>();
 
 builder.Services.AddMudServices();
