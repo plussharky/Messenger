@@ -9,7 +9,7 @@ namespace Messenger.Common.Extensions;
 
 public static class AuthenticationServiceCollectionExtensions
 {
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfigurationSection jwtSection)
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAuthentication(options =>
         {
@@ -18,7 +18,7 @@ public static class AuthenticationServiceCollectionExtensions
         })
         .AddJwtBearer(options =>
         {
-            var jwtOptions = jwtSection.Get<JwtOptions>()
+            var jwtOptions = configuration.GetSection("Jwt").Get<JwtOptions>()
                 ?? throw new InvalidOperationException("JWT configuration is missing");
             options.TokenValidationParameters = new TokenValidationParameters
             {

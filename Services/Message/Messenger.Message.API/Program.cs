@@ -30,7 +30,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("Jwt"));
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
