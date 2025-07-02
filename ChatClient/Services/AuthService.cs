@@ -18,20 +18,22 @@ internal sealed class AuthService(IdentityHttpClient httpClient, ILocalStorageSe
         {
             var response = await httpClient.PostAsJsonAsync(IdentityApiRoute, request);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
-                if (loginResponse != null)
-                {
-                    await localStorage.SetItemAsync(AccessTokenKey, loginResponse.AccessToken);
-                    await localStorage.SetItemAsync(RefreshTokenKey, loginResponse.RefreshToken);
-
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+            if (loginResponse == null)
+            {
+                return false;
+            }
+
+            await localStorage.SetItemAsync(AccessTokenKey, loginResponse.AccessToken);
+            await localStorage.SetItemAsync(RefreshTokenKey, loginResponse.RefreshToken);
+
+            return true;
         }
         catch
         {
@@ -79,20 +81,22 @@ internal sealed class AuthService(IdentityHttpClient httpClient, ILocalStorageSe
 
             var response = await httpClient.PostAsJsonAsync(RefreshTokenRoute, request);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
-                if (loginResponse != null)
-                {
-                    await localStorage.SetItemAsync(AccessTokenKey, loginResponse.AccessToken);
-                    await localStorage.SetItemAsync(RefreshTokenKey, loginResponse.RefreshToken);
-
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+            if (loginResponse == null)
+            {
+                return false;
+            }
+
+            await localStorage.SetItemAsync(AccessTokenKey, loginResponse.AccessToken);
+            await localStorage.SetItemAsync(RefreshTokenKey, loginResponse.RefreshToken);
+
+            return true;
         }
         catch
         {

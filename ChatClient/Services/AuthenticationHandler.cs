@@ -19,40 +19,42 @@ internal sealed class AuthenticationHandler(
 
         var response = await base.SendAsync(request, cancellationToken);
 
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
         {
-            await _semaphore.WaitAsync(cancellationToken);
-            try
+            return response;
+        }
+
+        await _semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            var currentToken = await authService.GetAccessTokenAsync();
+            if (!string.IsNullOrEmpty(currentToken))
             {
-                var currentToken = await authService.GetAccessTokenAsync();
-                if (!string.IsNullOrEmpty(currentToken))
-                {
-                    await AddAuthorizationHeaderAsync(request);
-                    response = await base.SendAsync(request, cancellationToken);
+                await AddAuthorizationHeaderAsync(request);
+                response = await base.SendAsync(request, cancellationToken);
 
-                    if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
-                    {
-                        return response;
-                    }
-                }
-
-                var refreshSuccess = await authService.RefreshTokenAsync();
-
-                if (refreshSuccess)
+                if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
                 {
-                    await AddAuthorizationHeaderAsync(request);
-                    response = await base.SendAsync(request, cancellationToken);
-                }
-                else
-                {
-                    await authService.LogoutAsync();
-                    navigationManager.NavigateTo("/login");
+                    return response;
                 }
             }
-            finally
+
+            var refreshSuccess = await authService.RefreshTokenAsync();
+
+            if (refreshSuccess)
             {
-                _semaphore.Release();
+                await AddAuthorizationHeaderAsync(request);
+                response = await base.SendAsync(request, cancellationToken);
             }
+            else
+            {
+                await authService.LogoutAsync();
+                navigationManager.NavigateTo("/login");
+            }
+        }
+        finally
+        {
+            _semaphore.Release();
         }
 
         return response;
