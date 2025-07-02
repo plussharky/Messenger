@@ -1,10 +1,10 @@
 using System.Net.Http.Json;
+using Blazored.LocalStorage;
 using ChatClient.Models;
-using Microsoft.JSInterop;
 
 namespace ChatClient.Services;
 
-internal sealed class AuthService(IdentityHttpClient httpClient, IJSRuntime jsRuntime)
+internal sealed class AuthService(IdentityHttpClient httpClient, ILocalStorageService localStorage)
     : IAuthService
 {
     private const string AccessTokenKey = "access_token";
@@ -24,8 +24,8 @@ internal sealed class AuthService(IdentityHttpClient httpClient, IJSRuntime jsRu
 
                 if (loginResponse != null)
                 {
-                    await jsRuntime.InvokeVoidAsync("localStorage.setItem", AccessTokenKey, loginResponse.AccessToken);
-                    await jsRuntime.InvokeVoidAsync("localStorage.setItem", RefreshTokenKey, loginResponse.RefreshToken);
+                    await localStorage.SetItemAsync(AccessTokenKey, loginResponse.AccessToken);
+                    await localStorage.SetItemAsync(RefreshTokenKey, loginResponse.RefreshToken);
 
                     return true;
                 }
@@ -41,31 +41,31 @@ internal sealed class AuthService(IdentityHttpClient httpClient, IJSRuntime jsRu
 
     public async Task LogoutAsync()
     {
-        await jsRuntime.InvokeVoidAsync("localStorage.removeItem", AccessTokenKey);
-        await jsRuntime.InvokeVoidAsync("localStorage.removeItem", RefreshTokenKey);
+        await localStorage.RemoveItemAsync(AccessTokenKey);
+        await localStorage.RemoveItemAsync(RefreshTokenKey);
     }
 
     public async Task<bool> IsAuthenticatedAsync()
     {
-        var token = await jsRuntime.InvokeAsync<string>("localStorage.getItem", AccessTokenKey);
+        var token = await localStorage.GetItemAsync<string>(AccessTokenKey);
         return !string.IsNullOrEmpty(token);
     }
 
     public async Task<string?> GetAccessTokenAsync()
     {
-        return await jsRuntime.InvokeAsync<string>("localStorage.getItem", AccessTokenKey);
+        return await localStorage.GetItemAsync<string>(AccessTokenKey);
     }
 
     public async Task<string?> GetRefreshTokenAsync()
     {
-        return await jsRuntime.InvokeAsync<string>("localStorage.getItem", RefreshTokenKey);
+        return await localStorage.GetItemAsync<string>(RefreshTokenKey);
     }
 
     public async Task<bool> RefreshTokenAsync()
     {
         try
         {
-            var refreshToken = await jsRuntime.InvokeAsync<string>("localStorage.getItem", RefreshTokenKey);
+            var refreshToken = await localStorage.GetItemAsync<string>(RefreshTokenKey);
 
             if (string.IsNullOrEmpty(refreshToken))
             {
@@ -85,8 +85,8 @@ internal sealed class AuthService(IdentityHttpClient httpClient, IJSRuntime jsRu
 
                 if (loginResponse != null)
                 {
-                    await jsRuntime.InvokeVoidAsync("localStorage.setItem", AccessTokenKey, loginResponse.AccessToken);
-                    await jsRuntime.InvokeVoidAsync("localStorage.setItem", RefreshTokenKey, loginResponse.RefreshToken);
+                    await localStorage.SetItemAsync(AccessTokenKey, loginResponse.AccessToken);
+                    await localStorage.SetItemAsync(RefreshTokenKey, loginResponse.RefreshToken);
 
                     return true;
                 }

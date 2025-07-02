@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using ChatClient;
 using ChatClient.Options;
 using ChatClient.Services;
@@ -18,6 +19,7 @@ var apiBaseUrl = builder.Configuration["ApiBaseUrl"]
 builder.Services.AddSingleton(new ApiIdentityUrl() { Value = apiIdentityUrl });
 builder.Services.AddSingleton(new ApiBaseUrl() { Value = apiBaseUrl });
 
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(sp => new IdentityHttpClient(sp.GetRequiredService<ApiIdentityUrl>()));
 
