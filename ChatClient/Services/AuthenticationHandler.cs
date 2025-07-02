@@ -1,9 +1,9 @@
 using System.Net.Http.Headers;
-using Microsoft.JSInterop;
+using Microsoft.AspNetCore.Components;
 
 namespace ChatClient.Services;
 
-internal sealed class AuthenticationHandler(IAuthService authService, IJSRuntime jsRuntime)
+internal sealed class AuthenticationHandler(IAuthService authService, NavigationManager navigationManager)
     : DelegatingHandler
 {
     private readonly SemaphoreSlim _semaphore = new (1, 1);
@@ -31,7 +31,7 @@ internal sealed class AuthenticationHandler(IAuthService authService, IJSRuntime
                 else
                 {
                     await authService.LogoutAsync();
-                    await jsRuntime.InvokeVoidAsync("window.location.href", cancellationToken: cancellationToken, "/login");
+                    navigationManager.NavigateTo("/login");
                 }
             }
             finally
@@ -47,7 +47,7 @@ internal sealed class AuthenticationHandler(IAuthService authService, IJSRuntime
     {
         try
         {
-            var token = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "access_token");
+            var token = await authService.GetAccessTokenAsync();
 
             if (!string.IsNullOrEmpty(token))
             {
