@@ -3,25 +3,25 @@ using Polly.Retry;
 
 namespace ChatClient.Services;
 
-internal sealed class RetryPolicyHandler : DelegatingHandler
+internal sealed class RetryPolicyHandler(ILogger<RetryPolicyHandler> logger)
+    : DelegatingHandler
 {
-    private readonly AsyncRetryPolicy<HttpResponseMessage> _retryPolicy;
-
-    public RetryPolicyHandler()
-    {
-        _retryPolicy = Policy<HttpResponseMessage>
-            .Handle<HttpRequestException>()
-            .OrResult(response => IsTransientError(response.StatusCode))
-            .WaitAndRetryAsync(
-                retryCount: 3,
-                sleepDurationProvider: retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                onRetry: (outcome, timespan, retryAttempt, context) =>
-                {
-                    Console.WriteLine(
-                        $"[RetryPolicy] Retry {retryAttempt} after {timespan.TotalSeconds:F1}s due to: {outcome.Result?.StatusCode} - {outcome.Exception?.Message}");
-                });
-    }
+    private readonly AsyncRetryPolicy<HttpResponseMessage> _retryPolicy = Policy<HttpResponseMessage>
+        .Handle<HttpRequestException>()
+        .OrResult(response => IsTransientError(response.StatusCode))
+        .WaitAndRetryAsync(
+            retryCount: 3,
+            sleepDurationProvider: retryAttempt =>
+                TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+            onRetry: (outcome, timespan, retryAttempt, context) =>
+            {
+                logger.LogWarning(
+                    "Retry {RetryAttempt} after {Timespan} due to: {StatusCode} - {ExceptionMessage}",
+                    retryAttempt,
+                    timespan.TotalSeconds,
+                    outcome.Result?.StatusCode,
+                    outcome.Exception?.Message);
+            });
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,

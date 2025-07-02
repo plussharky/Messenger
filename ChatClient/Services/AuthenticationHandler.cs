@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace ChatClient.Services;
 
-internal sealed class AuthenticationHandler(IAuthService authService, NavigationManager navigationManager)
+internal sealed class AuthenticationHandler(
+    IAuthService authService,
+    NavigationManager navigationManager,
+    ILogger<AuthenticationHandler> logger)
     : DelegatingHandler
 {
     private readonly SemaphoreSlim _semaphore = new (1, 1);
@@ -68,7 +71,7 @@ internal sealed class AuthenticationHandler(IAuthService authService, Navigation
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[AuthenticationHandler] Error retrieving token: {ex.Message}");
+            logger.LogError(ex, "Error retrieving token");
         }
     }
 
