@@ -38,7 +38,7 @@ internal sealed class RefreshTokenService(
 
     private Task<Result<RefreshToken, RefreshTokenError>> GetByTokenAsync(string token)
     {
-        return Maybe.From(async () => await refreshTokenRepository.GetByTokenAsync(token))
+        return Maybe.From(() => refreshTokenRepository.GetByTokenAsync(token))
             .ToResult(RefreshTokenError.TokenNotFound);
     }
 

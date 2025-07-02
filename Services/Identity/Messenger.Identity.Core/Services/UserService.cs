@@ -32,6 +32,6 @@ internal sealed class UserService(
         return await Maybe.From(async () => await userRepository.GetUserCredentialsByEmailAsync(email))
             .ToResult(LoginError.EmailNotFound)
             .Ensure(credentials => passwordHasher.VerifyPassword(password, credentials.PasswordHash), LoginError.InvalidPassword)
-            .Map(async credentials => await userRepository.GetUserByIdAsync(credentials.UserId));
+            .Map(credentials => userRepository.GetUserByIdAsync(credentials.UserId));
     }
 }

@@ -44,6 +44,7 @@ public static class IdentityCoreServiceCollectionExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<IRefreshTokenCleanupService, RefreshTokenCleanupService>();
+        services.AddHostedService<RecurringJobsHostedService>();
         services.AddHangfire((serviceProvider, configuration) => configuration
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
@@ -59,7 +60,6 @@ public static class IdentityCoreServiceCollectionExtensions
     public static IApplicationBuilder UseIdentityCore(this IApplicationBuilder app)
     {
         app.UseHangfireDashboard("/hangfire");
-        RefreshTokenCleanupJob.ScheduleDailyCleanup();
         return app;
     }
 }
