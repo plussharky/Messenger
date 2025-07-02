@@ -23,29 +23,19 @@ internal sealed class IdentityService(
 
     public Task<Result<LoginResponse, RefreshTokenError>> RefreshTokenAsync(string refreshToken)
     {
-        return refreshTokenService.ValidateAndGetTokenAsync(refreshToken)
-            .Bind(async token =>
-            {
-                var responseResult = await GenerateTokensAsync(token.UserId);
-
-                return await refreshTokenService
-                    .RevokeTokenAsync(refreshToken, responseResult.Value.RefreshToken)
-                    .Bind(() => responseResult);
-            });
+        return refreshTokenService
+            .ValidateAndGetTokenAsync(refreshToken)
+            .Bind(token => GenerateTokensAsync(token.UserId)
+                .Check(pair => refreshTokenService.RevokeTokenAsync(refreshToken, pair.RefreshToken)));
     }
 
     private Task<Result<LoginResponse, RefreshTokenError>> GenerateTokensAsync(Guid userId)
     {
         return refreshTokenService.CreateAsync(userId)
-            .Map(refreshToken =>
+            .Map(refreshToken => new LoginResponse
             {
-                var accessToken = tokenService.GenerateAccessToken(userId);
-
-                return new LoginResponse
-                {
-                    AccessToken = accessToken,
-                    RefreshToken = refreshToken.Token,
-                };
+                AccessToken = tokenService.GenerateAccessToken(userId),
+                RefreshToken = refreshToken.Token,
             });
     }
 }
