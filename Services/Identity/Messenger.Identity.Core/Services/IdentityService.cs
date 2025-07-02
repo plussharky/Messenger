@@ -24,7 +24,7 @@ internal sealed class IdentityService(
     public Task<Result<LoginResponse, RefreshTokenError>> RefreshTokenAsync(string refreshToken)
     {
         return refreshTokenService
-            .ValidateAndGetTokenAsync(refreshToken)
+            .GetTokenAsync(refreshToken)
             .Bind(token => GenerateTokensAsync(token.UserId)
                 .Check(pair => refreshTokenService.RevokeTokenAsync(refreshToken, pair.RefreshToken)));
     }

@@ -8,11 +8,9 @@ public interface IRefreshTokenService
 {
     Task<Result<RefreshToken, RefreshTokenError>> CreateAsync(Guid userId);
 
-    Task<Result<RefreshToken, RefreshTokenError>> GetByTokenAsync(string token);
-
     Task<UnitResult<RefreshTokenError>> RevokeTokenAsync(string token, string? replacedByToken = null);
 
     Task<UnitResult<RefreshTokenError>> RevokeAllUserTokensAsync(Guid userId);
 
-    Task<Result<RefreshToken, RefreshTokenError>> ValidateAndGetTokenAsync(string token);
+    Task<Result<RefreshToken, RefreshTokenError>> GetTokenAsync(string token);
 }

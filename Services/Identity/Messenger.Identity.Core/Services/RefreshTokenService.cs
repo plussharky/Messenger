@@ -36,7 +36,7 @@ internal sealed class RefreshTokenService(
         return Result.Success<RefreshToken, RefreshTokenError>(refreshToken);
     }
 
-    public Task<Result<RefreshToken, RefreshTokenError>> GetByTokenAsync(string token)
+    private Task<Result<RefreshToken, RefreshTokenError>> GetByTokenAsync(string token)
     {
         return Maybe.From(async () => await refreshTokenRepository.GetByTokenAsync(token))
             .ToResult(RefreshTokenError.TokenNotFound);
@@ -56,7 +56,7 @@ internal sealed class RefreshTokenService(
         return UnitResult.Success<RefreshTokenError>();
     }
 
-    public Task<Result<RefreshToken, RefreshTokenError>> ValidateAndGetTokenAsync(string token)
+    public Task<Result<RefreshToken, RefreshTokenError>> GetTokenAsync(string token)
     {
         return GetByTokenAsync(token)
             .Ensure(t => !t.IsRevoked, RefreshTokenError.TokenRevoked)
