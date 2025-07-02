@@ -21,6 +21,18 @@ internal sealed class AuthenticationHandler(IAuthService authService, Navigation
             await _semaphore.WaitAsync(cancellationToken);
             try
             {
+                var currentToken = await authService.GetAccessTokenAsync();
+                if (!string.IsNullOrEmpty(currentToken))
+                {
+                    await AddAuthorizationHeaderAsync(request);
+                    response = await base.SendAsync(request, cancellationToken);
+
+                    if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        return response;
+                    }
+                }
+
                 var refreshSuccess = await authService.RefreshTokenAsync();
 
                 if (refreshSuccess)
