@@ -1,4 +1,4 @@
-namespace Messenger.Identity.Core.Options;
+namespace Messenger.Identity.Api.Options;
 
 public sealed class RedisConnectionString
 {

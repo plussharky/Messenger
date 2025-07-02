@@ -1,15 +1,12 @@
 using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
-using Hangfire;
-using Hangfire.Redis.StackExchange;
 using Messenger.Common.Options;
 using Messenger.Common.Services;
 using Messenger.Identity.Core.Options;
 using Messenger.Identity.Core.Repository;
 using Messenger.Identity.Core.Repository.Migrations;
 using Messenger.Identity.Core.Services;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Messenger.Identity.Core;
@@ -44,22 +41,8 @@ public static class IdentityCoreServiceCollectionExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<IRefreshTokenCleanupService, RefreshTokenCleanupService>();
-        services.AddHostedService<RecurringJobsHostedService>();
-        services.AddHangfire((serviceProvider, configuration) => configuration
-            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-            .UseSimpleAssemblyNameTypeSerializer()
-            .UseRecommendedSerializerSettings()
-            .UseRedisStorage(serviceProvider.GetRequiredService<RedisConnectionString>().Value));
-
-        services.AddHangfireServer();
 
         services.Configure(configureJwt);
         return services;
-    }
-
-    public static IApplicationBuilder UseIdentityCore(this IApplicationBuilder app)
-    {
-        app.UseHangfireDashboard("/hangfire");
-        return app;
     }
 }

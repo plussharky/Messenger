@@ -1,7 +1,7 @@
 using Hangfire;
-using Microsoft.Extensions.Hosting;
+using Messenger.Identity.Core.Services;
 
-namespace Messenger.Identity.Core.Services;
+namespace Messenger.Identity.Api.Services;
 
 internal sealed class RecurringJobsHostedService(IRecurringJobManager recurringJobManager)
     : IHostedService

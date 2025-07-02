@@ -1,5 +1,9 @@
+using Hangfire;
+using Hangfire.Redis.StackExchange;
 using Messenger.Common.Extensions;
 using Messenger.Identity.Api.Errors;
+using Messenger.Identity.Api.Options;
+using Messenger.Identity.Api.Services;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Options;
 
@@ -43,6 +47,14 @@ builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfil
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IErrorHandler, ErrorHandler>();
 
+builder.Services.AddHangfire((serviceProvider, configuration) => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseRedisStorage(serviceProvider.GetRequiredService<RedisConnectionString>().Value));
+builder.Services.AddHangfireServer();
+builder.Services.AddHostedService<RecurringJobsHostedService>();
+
 builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("Jwt"));
 
 var app = builder.Build();
@@ -64,7 +76,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseIdentityCore();
+app.UseHangfireDashboard("/hangfire");
 
 await app.RunAsync();
 
