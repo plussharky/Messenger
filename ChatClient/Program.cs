@@ -21,10 +21,16 @@ builder.Services.AddSingleton(new ApiBaseUrl() { Value = apiBaseUrl });
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped(sp => new IdentityHttpClient(sp.GetRequiredService<ApiIdentityUrl>()));
 
 builder.Services.AddScoped<AuthenticationHandler>();
 builder.Services.AddScoped<RetryPolicyHandler>();
+
+builder.Services.AddHttpClient(HttpClientNames.IdentityClient, client =>
+{
+    client.BaseAddress = new Uri(apiIdentityUrl);
+})
+.AddHttpMessageHandler<RetryPolicyHandler>();
+
 builder.Services.AddHttpClient(HttpClientNames.AuthorizedClient, client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);

@@ -1,10 +1,11 @@
 using System.Net.Http.Json;
 using Blazored.LocalStorage;
 using ChatClient.Models;
+using ChatClient.Options;
 
 namespace ChatClient.Services;
 
-internal sealed class AuthService(IdentityHttpClient httpClient, ILocalStorageService localStorage)
+internal sealed class AuthService(IHttpClientFactory httpClientFactory, ILocalStorageService localStorage)
     : IAuthService
 {
     private const string AccessTokenKey = "access_token";
@@ -16,6 +17,7 @@ internal sealed class AuthService(IdentityHttpClient httpClient, ILocalStorageSe
     {
         try
         {
+            using var httpClient = httpClientFactory.CreateClient(HttpClientNames.IdentityClient);
             var response = await httpClient.PostAsJsonAsync(IdentityApiRoute, request);
 
             if (!response.IsSuccessStatusCode)
@@ -79,6 +81,7 @@ internal sealed class AuthService(IdentityHttpClient httpClient, ILocalStorageSe
                 RefreshToken = refreshToken,
             };
 
+            using var httpClient = httpClientFactory.CreateClient(HttpClientNames.IdentityClient);
             var response = await httpClient.PostAsJsonAsync(RefreshTokenRoute, request);
 
             if (!response.IsSuccessStatusCode)
