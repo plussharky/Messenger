@@ -15,6 +15,15 @@ services:
     volumes:
       - redis_data:/data
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 volumes:
   postgres_data:
   redis_data:

@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Messenger.Common.Events;
 using Messenger.Identity.Core.Domain.Errors;
 using Messenger.Identity.Core.Models;
 
@@ -7,7 +8,8 @@ namespace Messenger.Identity.Core.Services;
 internal sealed class IdentityService(
     IUserService userService,
     ITokenService tokenService,
-    IRefreshTokenService refreshTokenService)
+    IRefreshTokenService refreshTokenService,
+    IEventPublisher eventPublisher)
     : IIdentityService
 {
     public Task<Result<Guid, RegisterError>> RegisterUserAsync(string email, string password)
@@ -15,10 +17,17 @@ internal sealed class IdentityService(
         return userService.RegisterUserAsync(email, password);
     }
 
-    public Task<Result<LoginResponse, LoginError>> LoginAsync(string email, string password)
+    public async Task<Result<LoginResponse, LoginError>> LoginAsync(string email, string password)
     {
-        return userService.AuthenticateUserAsync(email, password)
+        var result = await userService.AuthenticateUserAsync(email, password)
             .Bind(user => GenerateTokensAsync(user.Id).MapError(_ => LoginError.TokenGenerationFailed));
+
+        if (result.IsSuccess)
+        {
+            await eventPublisher.PublishAsync(new UserLoggedIn { Email = email });
+        }
+
+        return result;
     }
 
     public Task<Result<LoginResponse, RefreshTokenError>> RefreshTokenAsync(string refreshToken)

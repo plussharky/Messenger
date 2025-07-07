@@ -1,6 +1,7 @@
 using Dapper;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
+using MassTransit;
 using Messenger.Common.Options;
 using Messenger.Common.Services;
 using Messenger.Identity.Core.Options;
@@ -8,13 +9,16 @@ using Messenger.Identity.Core.Repository;
 using Messenger.Identity.Core.Repository.Migrations;
 using Messenger.Identity.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Messenger.Identity.Core;
 
 public static class IdentityCoreServiceCollectionExtensions
 {
     public static IServiceCollection AddIdentityCoreServices(
-        this IServiceCollection services, Action<JwtOptions> configureJwt)
+        this IServiceCollection services,
+        Action<JwtOptions> configureJwt,
+        Action<RabbitMQOptions> configureRabbitMQ)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -30,6 +34,17 @@ public static class IdentityCoreServiceCollectionExtensions
             .AddLogging(lb => lb.AddFluentMigratorConsole())
             .AddScoped<IVersionTableMetaData, CustomVersionTableMetaData>();
 
+        services.AddMassTransit(x =>
+        {
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                var options = context.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
+                var uri = new Uri($"rabbitmq://{options.Username}:{options.Password}@{options.Host}:{options.Port}/{options.VirtualHost}");
+                cfg.Host(uri);
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+
         services.AddHostedService<DatabaseMigrationService>();
         services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
         services.AddScoped<IUserRepository, UserRepository>();
@@ -41,8 +56,11 @@ public static class IdentityCoreServiceCollectionExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<IRefreshTokenCleanupService, RefreshTokenCleanupService>();
+        services.AddScoped<IEventPublisher, EventPublisher>();
 
         services.Configure(configureJwt);
+        services.Configure(configureRabbitMQ);
+
         return services;
     }
 }

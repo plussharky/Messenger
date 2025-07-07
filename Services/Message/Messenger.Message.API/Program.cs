@@ -16,8 +16,10 @@ builder.Services.AddAutoMapper(typeof(MessageProfile));
 
 builder.Services.AddDomain()
     .AddApplication()
-    .AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."));
+    .AddInfrastructure(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."),
+        builder.Configuration.GetSection("RabbitMQ").Bind);
 
 builder.Services.AddCors(options =>
 {

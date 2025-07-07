@@ -6,6 +6,7 @@ using Messenger.Identity.Api.Options;
 using Messenger.Identity.Api.Services;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Options;
+using Messenger.Identity.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,9 @@ builder.Services.AddSingleton(new RedisConnectionString
     Value = redisConnectionString,
 });
 
-builder.Services.AddIdentityCoreServices(builder.Configuration.GetSection("Jwt").Bind);
+builder.Services.AddIdentityCoreServices(
+    builder.Configuration.GetSection("Jwt").Bind,
+    builder.Configuration.GetSection("RabbitMQ").Bind);
 builder.Services.AddAutoMapper(typeof(Messenger.Identity.Api.Mapping.LoginProfile).Assembly);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IErrorHandler, ErrorHandler>();
