@@ -18,7 +18,7 @@ public static class AuthenticationServiceCollectionExtensions
         })
         .AddJwtBearer(options =>
         {
-            var jwtOptions = configuration.GetSection("Jwt").Get<JwtOptions>()
+            var jwtOptions = configuration.Get<JwtOptions>()
                 ?? throw new InvalidOperationException("JWT configuration is missing");
             options.TokenValidationParameters = new TokenValidationParameters
             {

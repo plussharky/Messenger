@@ -55,7 +55,7 @@ builder.Services.AddHangfire((serviceProvider, configuration) => configuration
 builder.Services.AddHangfireServer();
 builder.Services.AddHostedService<RecurringJobsHostedService>();
 
-builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("Jwt"));
 
 var app = builder.Build();
 
