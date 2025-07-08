@@ -24,6 +24,19 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - COLLECTOR_OTLP_HTTP_ENABLED=true
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - jaeger_data:/tmp
+
 volumes:
   postgres_data:
   redis_data:
+  jaeger_data:

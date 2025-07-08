@@ -1,12 +1,20 @@
+using System.Diagnostics;
 using Hangfire;
 using Hangfire.Redis.StackExchange;
+using MassTransit.Logging;
 using Messenger.Common.Extensions;
 using Messenger.Identity.Api.Errors;
 using Messenger.Identity.Api.Options;
 using Messenger.Identity.Api.Services;
 using Messenger.Identity.Core;
 using Messenger.Identity.Core.Options;
-using Messenger.Identity.Core.Services;
+using Npgsql;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+Activity.ForceDefaultIdFormat = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +35,27 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+builder.Services.AddOpenTelemetry()
+  .ConfigureResource(r => r.AddService(
+      serviceName: "Messenger.Identity",
+      serviceVersion: "1.0.0"))
+  .WithTracing(tracing =>
+  {
+      tracing
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddRedisInstrumentation()
+        .AddSource(DiagnosticHeaders.DefaultListenerName)
+        .AddNpgsql()
+        .AddOtlpExporter(otlp =>
+        {
+            otlp.Endpoint = new Uri(
+                builder.Configuration["Jaeger:CollectorUrl"]
+                ?? "http://localhost:4317");
+            otlp.Protocol = OtlpExportProtocol.Grpc;
+        });
+  });
 
 var connectionStringValue = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

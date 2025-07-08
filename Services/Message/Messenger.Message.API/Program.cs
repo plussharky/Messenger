@@ -1,8 +1,16 @@
+using System.Diagnostics;
+using MassTransit.Logging;
 using Messenger.Common.Extensions;
 using Messenger.Messages.Api.Mappings;
 using Messenger.Messages.Application;
 using Messenger.Messages.Domain;
 using Messenger.Messages.Infrastructure;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+Activity.DefaultIdFormat = ActivityIdFormat.W3C;
+Activity.ForceDefaultIdFormat = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +21,26 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(typeof(MessageProfile));
+
+builder.Services.AddOpenTelemetry()
+  .ConfigureResource(r => r.AddService(
+      serviceName: "Messenger.Messages",
+      serviceVersion: "1.0.0"))
+  .WithTracing(tracing =>
+  {
+      tracing
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation()
+        .AddSource(DiagnosticHeaders.DefaultListenerName)
+        .AddOtlpExporter(otlp =>
+        {
+            otlp.Endpoint = new Uri(
+              builder.Configuration["Jaeger:CollectorUrl"]
+              ?? "http://localhost:4317");
+            otlp.Protocol = OtlpExportProtocol.Grpc;
+        });
+  });
 
 builder.Services.AddDomain()
     .AddApplication()
