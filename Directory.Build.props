@@ -42,9 +42,12 @@
         <_ProjectBaseName>$([System.String]::Copy($(MSBuildProjectName)).Substring(0, $([MSBuild]::Subtract($(MSBuildProjectName.LastIndexOf('.')), -1))))</_ProjectBaseName>
     </PropertyGroup>
 
-    <ItemGroup Condition="!$(MSBuildProjectName.EndsWith('.ComponentTests'))">
+    <ItemGroup Condition="!$(MSBuildProjectName.Contains('Test'))">
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>$(_ProjectBaseName)ComponentTests</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(_ProjectBaseName)Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
 </Project> 
