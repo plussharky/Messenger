@@ -11,4 +11,6 @@ public sealed class RabbitMQOptions
     public required string Password { get; init; }
 
     public string VirtualHost { get; init; } = "/";
+
+    public Uri Uri => new ($"rabbitmq://{Username}:{Password}@{Host}:{Port}/{VirtualHost}");
 }

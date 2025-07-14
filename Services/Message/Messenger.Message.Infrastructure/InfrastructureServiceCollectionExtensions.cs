@@ -32,8 +32,7 @@ public static class InfrastructureServiceCollectionExtensions
             x.UsingRabbitMq((context, cfg) =>
             {
                 var options = context.GetRequiredService<IOptions<RabbitMQOptions>>().Value;
-                var uri = new Uri($"rabbitmq://{options.Username}:{options.Password}@{options.Host}:{options.Port}/{options.VirtualHost}");
-                cfg.Host(uri);
+                cfg.Host(options.Uri);
                 cfg.ConfigureEndpoints(context);
             });
         });
