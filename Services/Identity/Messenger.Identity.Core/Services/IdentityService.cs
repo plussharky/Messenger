@@ -19,15 +19,9 @@ internal sealed class IdentityService(
 
     public async Task<Result<LoginResponse, LoginError>> LoginAsync(string email, string password)
     {
-        var result = await userService.AuthenticateUserAsync(email, password)
-            .Bind(user => GenerateTokensAsync(user.Id).MapError(_ => LoginError.TokenGenerationFailed));
-
-        if (result.IsSuccess)
-        {
-            await eventPublisher.PublishAsync(new UserLoggedIn { Email = email });
-        }
-
-        return result;
+        return await userService.AuthenticateUserAsync(email, password)
+            .Bind(user => GenerateTokensAsync(user.Id).MapError(_ => LoginError.TokenGenerationFailed))
+            .Tap(async _ => await eventPublisher.PublishAsync(new UserLoggedIn { Email = email }));
     }
 
     public Task<Result<LoginResponse, RefreshTokenError>> RefreshTokenAsync(string refreshToken)
