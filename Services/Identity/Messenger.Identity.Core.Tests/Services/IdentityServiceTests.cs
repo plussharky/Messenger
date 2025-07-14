@@ -1,10 +1,10 @@
 using AutoFixture;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using Messenger.Identity.Events;
 using Messenger.Identity.Core.Domain.Errors;
 using Messenger.Identity.Core.Repository.Entities;
 using Messenger.Identity.Core.Services;
+using Messenger.Identity.Events;
 using Moq;
 using Xunit;
 

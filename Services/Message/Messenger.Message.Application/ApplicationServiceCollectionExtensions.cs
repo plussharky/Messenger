@@ -10,6 +10,7 @@ public static class ApplicationServiceCollectionExtensions
     {
         services.AddScoped<IMessageService, MessageService>();
         services.AddSingleton<ITimeProvider, SystemTimeProvider>();
+        services.AddScoped<IUserLoginHandler, UserLoginHandler>();
         return services;
     }
 }

@@ -1,6 +1,6 @@
 using MassTransit;
 using Messenger.Common.Options;
-using Messenger.Messages.Application.Consumers;
+using Messenger.Messages.Consumers;
 using Messenger.Messages.Domain.Repositories;
 using Messenger.Messages.Infrastructure.Data;
 using Messenger.Messages.Infrastructure.Services;
@@ -27,7 +27,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.Configure(configureRabbitMQ);
         services.AddMassTransit(x =>
         {
-            x.AddConsumer<UserLoggedInConsumer>();
+            x.AddMessageConsumers();
 
             x.UsingRabbitMq((context, cfg) =>
             {

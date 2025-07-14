@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Identity\Messenger.Identity.Events\Messenger.Identity.Events.csproj" />
+    <ProjectReference Include="..\Messenger.Message.Application\Messenger.Messages.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit" Version="8.5.1" />
+  </ItemGroup>
+
+</Project>
