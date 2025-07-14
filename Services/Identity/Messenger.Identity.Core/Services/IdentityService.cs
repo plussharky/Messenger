@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
-using Messenger.Common.Events;
 using Messenger.Identity.Core.Domain.Errors;
 using Messenger.Identity.Core.Models;
+using Messenger.Identity.Events;
 
 namespace Messenger.Identity.Core.Services;
 

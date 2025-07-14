@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Identity.Api", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Identity.Core", "Services\Identity\Messenger.Identity.Core\Messenger.Identity.Core.csproj", "{0AB50896-2AA7-BCB9-7F46-9C80B6D75419}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Identity.Events", "Services\Identity\Messenger.Identity.Events\Messenger.Identity.Events.csproj", "{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F0F8E07E-F1C7-6E79-AC15-6F16370D01B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Common", "Services\Common\Messenger.Common.csproj", "{B30B181E-3F83-4D2D-B11F-715514EC3379}"
@@ -161,6 +163,18 @@ Global
 		{0AB50896-2AA7-BCB9-7F46-9C80B6D75419}.Release|x64.Build.0 = Release|Any CPU
 		{0AB50896-2AA7-BCB9-7F46-9C80B6D75419}.Release|x86.ActiveCfg = Release|Any CPU
 		{0AB50896-2AA7-BCB9-7F46-9C80B6D75419}.Release|x86.Build.0 = Release|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Debug|x64.Build.0 = Debug|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Debug|x86.Build.0 = Debug|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Release|x64.ActiveCfg = Release|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Release|x64.Build.0 = Release|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Release|x86.ActiveCfg = Release|Any CPU
+		{1BC50896-2AA7-BCB9-7F46-9C80B6D75420}.Release|x86.Build.0 = Release|Any CPU
 		{B30B181E-3F83-4D2D-B11F-715514EC3379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B30B181E-3F83-4D2D-B11F-715514EC3379}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B30B181E-3F83-4D2D-B11F-715514EC3379}.Debug|x64.ActiveCfg = Debug|Any CPU

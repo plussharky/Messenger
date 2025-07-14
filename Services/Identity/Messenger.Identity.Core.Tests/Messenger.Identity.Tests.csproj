@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Messenger.Identity.Core\Messenger.Identity.Core.csproj" />
+    <ProjectReference Include="..\Messenger.Identity.Events\Messenger.Identity.Events.csproj" />
   </ItemGroup>
 
 </Project> 

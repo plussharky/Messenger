@@ -1,4 +1,4 @@
-namespace Messenger.Common.Events;
+namespace Messenger.Identity.Events;
 
 public record UserLoggedIn
 {

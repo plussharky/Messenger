@@ -1,7 +1,7 @@
 using AutoFixture;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using Messenger.Common.Events;
+using Messenger.Identity.Events;
 using Messenger.Identity.Core.Domain.Errors;
 using Messenger.Identity.Core.Repository.Entities;
 using Messenger.Identity.Core.Services;

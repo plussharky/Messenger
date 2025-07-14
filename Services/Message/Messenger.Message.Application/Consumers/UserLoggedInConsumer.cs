@@ -1,5 +1,5 @@
 using MassTransit;
-using Messenger.Common.Events;
+using Messenger.Identity.Events;
 using Messenger.Messages.Application.Requests;
 using Messenger.Messages.Application.Services;
 
