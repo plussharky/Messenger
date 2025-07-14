@@ -5,7 +5,7 @@ using Messenger.Messages.Application.Services;
 
 namespace Messenger.Messages.Consumers.Consumers;
 
-public sealed class UserLoggedInConsumer(IUserLoginHandler userLoginHandler)
+internal sealed class UserLoggedInConsumer(IUserLoginHandler userLoginHandler)
     : IConsumer<UserLoggedIn>
 {
     public async Task Consume(ConsumeContext<UserLoggedIn> context)
@@ -13,7 +13,7 @@ public sealed class UserLoggedInConsumer(IUserLoginHandler userLoginHandler)
         var request = new UserLoginRequest
         {
             UserEmail = context.Message.Email,
-            UserId = Guid.NewGuid(),
+            MessageId = context.MessageId ?? Guid.NewGuid(),
         };
 
         await userLoginHandler.HandleUserLoginAsync(request);

@@ -9,7 +9,7 @@ internal sealed class UserLoginHandler(IMessageService messageService)
     {
         var welcomeMessage = new SendMessageRequest
         {
-            Id = Guid.NewGuid(),
+            Id = request.MessageId,
             Text = $"Привет, {request.UserEmail}! Добро пожаловать в систему.",
         };
 
